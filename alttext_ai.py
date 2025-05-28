@@ -209,19 +209,22 @@ class AltTextAI:
             True if connection is successful, False otherwise
         """
         try:
-            # Use a simple test image URL
-            test_url = "https://via.placeholder.com/150x150.png?text=Test"
-            
-            response = requests.post(
-                f"{self.base_url}/images",
+            # Instead of using a test image, just check if we can make a basic API call
+            # by trying to get job status for a non-existent job (which should return 404 but proves API is accessible)
+            response = requests.get(
+                f"{self.base_url}/jobs/test-connection-check",
                 headers=self.headers,
-                json={"image": {"url": test_url}},
                 timeout=10
             )
             
-            if response.status_code in [200, 202]:
+            # Any response (even 404) means the API is accessible and our key is valid
+            # Invalid API keys would return 401/403
+            if response.status_code in [200, 202, 404]:
                 print("✅ AltText.ai API connection successful")
                 return True
+            elif response.status_code in [401, 403]:
+                print(f"❌ API authentication failed with status {response.status_code}")
+                return False
             else:
                 print(f"❌ API test failed with status {response.status_code}")
                 return False
