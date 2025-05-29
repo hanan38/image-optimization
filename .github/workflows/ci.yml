@@ -204,7 +204,7 @@ jobs:
           "setup.py"
           "requirements.txt"
           "process_csv.sh"
-          "env.example"
+          ".env.example"
         )
         
         for file in "${required_files[@]}"; do
@@ -236,7 +236,7 @@ jobs:
       run: |
         echo "🔧 Validating environment template..."
         
-        # Check env.example has required variables
+        # Check .env.example has required variables
         required_vars=(
           "ALTTEXT_AI_API_KEY"
           "ALTTEXT_AI_KEYWORDS"
@@ -244,10 +244,10 @@ jobs:
         )
         
         for var in "${required_vars[@]}"; do
-          if grep -q "$var" env.example; then
-            echo "✅ $var found in env.example"
+          if grep -q "$var" .env.example; then
+            echo "✅ $var found in .env.example"
           else
-            echo "❌ $var missing from env.example"
+            echo "❌ $var missing from .env.example"
             exit 1
           fi
         done 
