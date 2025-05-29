@@ -1,2 +1,3 @@
-filename,alt_text
-sample-image.jpg,"Sample alt text description for local file" 
+filename,cloudfront_url,alt_text
+local-photo1.jpg,https://your-cloudfront-domain.com/local-photo1_1634567890.webp,"A local photo that was uploaded and optimized with alt text generation"
+local-photo2.png,https://your-cloudfront-domain.com/local-photo2_1634567891.webp,"Another local image showing the local upload workflow with AI-generated descriptions" 

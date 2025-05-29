@@ -590,10 +590,10 @@ Before making any commits, **ALL** code must pass the following comprehensive ch
    - Environment template verification
 
 #### **Enhanced Pre-Commit Script**
-Our `pre_commit_check.sh` script mirrors the CI pipeline exactly:
+Our `pre_commit_check.sh` script mirrors the CI pipeline exactly and **automatically fixes issues** where safe to do so:
 
 ```bash
-# Run the comprehensive pre-commit validation
+# Run the comprehensive pre-commit validation with auto-fixes
 ./pre_commit_check.sh
 
 # Or with bash if not executable
@@ -604,8 +604,19 @@ bash pre_commit_check.sh
 - **Colored output** for easy identification of issues
 - **Step-by-step progress** through all validation phases
 - **Automatic tool installation** for missing dependencies
+- **Auto-fixing capabilities** for common issues
+- **Interactive prompts** for user confirmation
 - **CI pipeline alignment** - catches same issues as GitHub Actions
 - **Comprehensive reporting** of all issues found
+
+**Automated Fixes:**
+- 🔧 **Missing directories**: Auto-creates `data/` subdirectories with `.gitkeep` files
+- 🔧 **File permissions**: Auto-fixes executable permissions for shell scripts
+- 🔧 **Code formatting**: Automatically runs `black` and `isort`
+- 🔧 **Linting issues**: Auto-fixes with `autopep8` (with user confirmation)
+- 🔧 **Security vulnerabilities**: Offers to update vulnerable packages automatically
+- 🔧 **Missing tools**: Installs development tools automatically (with confirmation)
+- 🔧 **Git commits**: Optionally commits auto-fixes with descriptive message
 
 #### **Manual Check Commands**
 If you prefer to run checks individually:

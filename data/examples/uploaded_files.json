@@ -1,11 +1,17 @@
 {
-  "sample_image_123456789.webp": {
-    "original_url": "https://example.com/sample-image.jpg",
-    "cloudfront_url": "https://cdn.example.com/sample_image_123456789.webp",
-    "alt_text": "Sample alt text description",
-    "upload_time": "2025-01-20T10:30:00Z",
-    "file_size": "45KB",
-    "format": "webp",
-    "optimization_applied": true
+  "sample-image1_1634567890.webp": {
+    "cloudfront_url": "https://your-cloudfront-domain.com/sample-image1_1634567890.webp",
+    "s3_key": "sample-image1_1634567890.webp",
+    "alt_text": "A sample image showing example content for demonstration purposes"
+  },
+  "sample-image2_1634567891.webp": {
+    "cloudfront_url": "https://your-cloudfront-domain.com/sample-image2_1634567891.webp", 
+    "s3_key": "sample-image2_1634567891.webp",
+    "alt_text": "Another example image with optimized format conversion from PNG to WebP"
+  },
+  "sample-image3_1634567892.webp": {
+    "cloudfront_url": "https://your-cloudfront-domain.com/sample-image3_1634567892.webp",
+    "s3_key": "sample-image3_1634567892.webp", 
+    "alt_text": "A WebP image example demonstrating the image processing workflow"
   }
 } 
