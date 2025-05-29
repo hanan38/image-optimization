@@ -74,7 +74,7 @@ jobs:
         "
 
     - name: Upload security reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-reports-${{ matrix.python-version }}
@@ -121,7 +121,7 @@ jobs:
         find . -name "*.py" -not -path "./.git/*" -exec wc -l {} + | tail -1 | xargs echo "Total lines:" >> code-quality-report.md
 
     - name: Upload code quality report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-quality-report
         path: code-quality-report.md
@@ -221,12 +221,23 @@ jobs:
         done
         
         # Check directories exist
-        if [ -d "images_to_upload" ]; then
-          echo "✅ images_to_upload directory exists"
+        if [ -d "data" ]; then
+          echo "✅ data directory exists"
         else
-          echo "❌ images_to_upload directory is missing"
+          echo "❌ data directory is missing"
           exit 1
         fi
+        
+        # Check data subdirectories exist
+        data_dirs=("input" "output" "local_images" "examples")
+        for dir in "${data_dirs[@]}"; do
+          if [ -d "data/$dir" ]; then
+            echo "✅ data/$dir directory exists"
+          else
+            echo "❌ data/$dir directory is missing"
+            exit 1
+          fi
+        done
         
         # Check shell script is executable
         if [ -x "process_csv.sh" ]; then
