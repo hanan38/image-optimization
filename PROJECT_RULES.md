@@ -559,7 +559,56 @@ curl -X GET http://localhost:5000/files
 ### **Pre-Commit Checks**
 
 #### **Mandatory Pre-Commit Validation**
-Before making any commits, **ALL** code must pass the following checks to prevent CI failures:
+Before making any commits, **ALL** code must pass the following comprehensive checks to prevent CI failures:
+
+**The enhanced `pre_commit_check.sh` script performs:**
+
+1. **Tool Verification & Installation**
+   - Checks for required tools: black, isort, flake8, bandit, safety
+   - Auto-installs missing tools if needed
+
+2. **Project Structure Validation**
+   - Verifies all required files exist
+   - Checks directory structure integrity
+   - Ensures executable permissions
+
+3. **Code Formatting & Quality**
+   - Formats code with black
+   - Sorts imports with isort
+   - Runs comprehensive flake8 linting
+
+4. **Security Checks**
+   - Bandit security analysis
+   - Safety vulnerability scanning
+
+5. **Functionality Testing**
+   - Import validation for all modules
+   - Core function availability testing
+
+6. **Documentation Validation**
+   - README section completeness
+   - Environment template verification
+
+#### **Enhanced Pre-Commit Script**
+Our `pre_commit_check.sh` script mirrors the CI pipeline exactly:
+
+```bash
+# Run the comprehensive pre-commit validation
+./pre_commit_check.sh
+
+# Or with bash if not executable
+bash pre_commit_check.sh
+```
+
+**Script Features:**
+- **Colored output** for easy identification of issues
+- **Step-by-step progress** through all validation phases
+- **Automatic tool installation** for missing dependencies
+- **CI pipeline alignment** - catches same issues as GitHub Actions
+- **Comprehensive reporting** of all issues found
+
+#### **Manual Check Commands**
+If you prefer to run checks individually:
 
 ```bash
 # 1. Format code with black
@@ -571,60 +620,102 @@ isort .
 # 3. Check linting with flake8
 flake8 --exclude=venv --max-line-length=127 --extend-ignore=E203,W503 .
 
-# 4. Verify no uncommitted changes remain
+# 4. Security check with bandit
+bandit -r . -x ./tests/,./venv/ --severity-level medium
+
+# 5. Vulnerability check with safety
+safety scan
+
+# 6. Test imports
+python -c "import upload_files; import alttext_ai; print('✅ All imports work')"
+
+# 7. Verify no uncommitted changes remain
 git status
-```
-
-#### **Quick Pre-Commit Script**
-Create this script for easy validation:
-
-```bash
-#!/bin/bash
-# File: pre_commit_check.sh
-
-echo "🔍 Running pre-commit checks..."
-
-echo "📝 Formatting code with black..."
-black .
-
-echo "📋 Sorting imports with isort..."
-isort .
-
-echo "🔍 Running flake8 linting..."
-if flake8 --exclude=venv --max-line-length=127 --extend-ignore=E203,W503 .; then
-    echo "✅ All linting checks passed!"
-else
-    echo "❌ Linting errors found. Please fix before committing."
-    exit 1
-fi
-
-echo "🎉 All pre-commit checks passed! Ready to commit."
 ```
 
 #### **Required Tools Installation**
 ```bash
-pip install black flake8 isort
+# Core development tools
+pip install black flake8 isort mypy
+
+# Security tools  
+pip install bandit safety
+
+# Or install all at once
+pip install black flake8 isort mypy bandit safety
 ```
 
-#### **Flake8 Configuration**
-- **Max line length**: 127 characters
+#### **Configuration Details**
+
+**Flake8 Configuration:**
+- **Max line length**: 127 characters (GitHub editor width)
 - **Excluded directories**: `venv/`, `__pycache__/`
 - **Ignored rules**: 
   - `E203` - whitespace before ':' (conflicts with black)
   - `W503` - line break before binary operator (conflicts with black)
 
-#### **Black Configuration**
+**Black Configuration:**
 - Uses default settings for consistent formatting
 - Automatically handles line length and code style
+- Integrates with isort for import formatting
 
-#### **Import Organization (isort)**
-- Separates standard library, third-party, and local imports
-- Maintains consistent import order across all files
+**Bandit Security Configuration:**
+- Scans all Python files recursively
+- Excludes test directories and virtual environments
+- Medium severity threshold for practical security focus
+
+**Safety Configuration:**
+- Checks for known vulnerabilities in dependencies
+- Reports CVE numbers and severity levels
+- Provides remediation suggestions
 
 #### **Pre-Commit Enforcement**
-- **GitHub Actions** will fail if code doesn't pass these checks
-- **Local development** should run these before every commit
-- **Code reviews** should verify formatting compliance
+
+**Local Development:**
+- **MUST** run `./pre_commit_check.sh` before every commit
+- **Address all issues** before pushing to remote
+- **Verify clean git status** after formatting
+
+**GitHub Actions Integration:**
+- **All CI checks mirror** the pre-commit script exactly
+- **Pipeline will fail** if pre-commit checks weren't run locally
+- **Save time** by catching issues early in development
+
+**Code Review Process:**
+- **Reviewers expect** clean pre-commit validation
+- **No formatting commits** should be needed after pre-commit
+- **Focus reviews** on functionality rather than style issues
+
+#### **Troubleshooting Common Issues**
+
+**Tool Installation Issues:**
+```bash
+# If pip install fails, try upgrading pip first
+python -m pip install --upgrade pip
+pip install black isort flake8 bandit safety
+```
+
+**Import Errors During Testing:**
+```bash
+# Ensure you're in the project directory
+cd /path/to/image-optimization
+
+# Activate virtual environment if using one
+source venv/bin/activate  # Linux/macOS
+venv\Scripts\activate     # Windows
+
+# Run the pre-commit script
+./pre_commit_check.sh
+```
+
+**Permission Errors:**
+```bash
+# Make script executable
+chmod +x pre_commit_check.sh
+
+# Or run with bash
+bash pre_commit_check.sh
+```
 
 ### **Version Control**
 - Use semantic versioning (MAJOR.MINOR.PATCH)

@@ -435,7 +435,11 @@ def download_and_upload_from_csv(
     headers = {
         "DNT": "1",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/134.0.0.0 Safari/537.36"
+        ),
         "sec-ch-ua": '"Not:A-Brand";v="24", "Chromium";v="134"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"macOS"',
@@ -569,7 +573,7 @@ def download_and_upload_from_csv(
                 print(f"Error processing URL {source_url}: {e}")
                 # Add retry mechanism with curl as a last resort
                 try:
-                    print(f"Retrying with curl as a last resort...")
+                    print("Retrying with curl as a last resort...")
 
                     # Create a temporary file for curl output
                     temp_file = os.path.join(UPLOAD_FOLDER, f"temp_{file_name}")
@@ -579,17 +583,21 @@ def download_and_upload_from_csv(
                         "curl",
                         source_url,
                         "-H",
-                        f"DNT: 1",
+                        "DNT: 1",
                         "-H",
-                        f"Upgrade-Insecure-Requests: 1",
+                        "Upgrade-Insecure-Requests: 1",
                         "-H",
-                        f"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+                        (
+                            "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/134.0.0.0 Safari/537.36"
+                        ),
                         "-H",
-                        f'sec-ch-ua: "Not:A-Brand";v="24", "Chromium";v="134"',
+                        'sec-ch-ua: "Not:A-Brand";v="24", "Chromium";v="134"',
                         "-H",
-                        f"sec-ch-ua-mobile: ?0",
+                        "sec-ch-ua-mobile: ?0",
                         "-H",
-                        f'sec-ch-ua-platform: "macOS"',
+                        'sec-ch-ua-platform: "macOS"',
                         "-o",
                         temp_file,
                     ]
