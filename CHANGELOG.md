@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.1.0] - 2025-05-29
+## [2.1.0] - 2025-05-30
 
 ### 🚀 Enhanced Multi-Provider Architecture & Production Readiness
 
@@ -102,59 +102,7 @@ No migration required - all existing functionality continues to work unchanged. 
 
 ---
 
-## [1.1.2] - 2025-05-29
-
-### 🔄 Final Refactor & Organization
-
-#### Added
-- **Organized Data Structure**: Created `data/` folder with `input/`, `output/`, `examples/`, and `local_images/` subfolders
-- **Example Files**: Added sample files in `data/examples/` for reference (not ignored by git)
-  - `images_to_download_and_upload.csv` - Sample input format
-  - `images_mapping.csv` - Sample output format  
-  - `uploaded_files.json` - Sample state tracking
-  - `local_files_alt_text.csv` - Sample alt text output
-- Open source project setup with MIT License
-- Comprehensive contribution guidelines and templates
-- GitHub workflows for CI/CD automation
-- Issue and pull request templates
-- Automated welcome messages for new contributors
-- Project rules documentation for AI models and developers
-
-#### Changed
-- **File Organization**: Moved all data files to organized folder structure
-  - Input files: `data/input/`
-  - Output files: `data/output/`
-  - Example files: `data/examples/`
-  - Local images: `data/local_images/` (moved from `images_to_upload/`)
-- **Simplified .gitignore**: Removed redundant entries and organized by category
-- **Updated File Paths**: All scripts now use the new data folder structure
-- **Enhanced Setup**: `setup.py` now creates the complete folder structure
-- **PROJECT_RULES.md**: Now references CHANGELOG.md for version history instead of maintaining separate versions
-- **Python Version Support**: Updated to support Python 3.9-3.13 (dropped 3.7-3.8)
-- **Recommended Python Version**: Python 3.13 for best performance and compatibility
-- **CI/CD Testing**: Updated to test against Python 3.9, 3.10, 3.11, 3.12, and 3.13
-- Updated README with comprehensive virtual environment setup instructions
-- Enhanced documentation structure and organization
-- **Virtual Environment Support**:
-  - Detailed Python 3.13 virtual environment setup instructions
-  - Cross-platform virtual environment activation commands
-  - Virtual environment benefits and best practices documentation
-  - Development environment setup guidelines
-
-#### Removed
-- **images_to_upload folder**: Replaced with organized `data/local_images/` structure
-
-#### Fixed
-- **CSV Writing Bug**: Fixed issue when alt text generation is disabled but existing mappings contain alt text
-- **Path References**: Updated all documentation and scripts to use new file paths
-
-#### Technical Details
-- Maintained backward compatibility for existing functionality
-- All example files use realistic sample data
-- Improved project organization following best practices
-- Enhanced user experience with clearer file structure
-
-## [2.0.0] - 2025-01-30
+## [2.0.0] - 2025-05-30
 
 ### 🚀 Multi-Provider Architecture - Major Refactor
 
@@ -279,3 +227,55 @@ UPLOAD_PROVIDER=auto  # Prompts for selection
 - Custom integrations may need updates to use new provider interface
 
 ---
+
+## [1.1.2] - 2025-05-29
+
+### 🔄 Final Refactor & Organization
+
+#### Added
+- **Organized Data Structure**: Created `data/` folder with `input/`, `output/`, `examples/`, and `local_images/` subfolders
+- **Example Files**: Added sample files in `data/examples/` for reference (not ignored by git)
+  - `images_to_download_and_upload.csv` - Sample input format
+  - `images_mapping.csv` - Sample output format  
+  - `uploaded_files.json` - Sample state tracking
+  - `local_files_alt_text.csv` - Sample alt text output
+- Open source project setup with MIT License
+- Comprehensive contribution guidelines and templates
+- GitHub workflows for CI/CD automation
+- Issue and pull request templates
+- Automated welcome messages for new contributors
+- Project rules documentation for AI models and developers
+
+#### Changed
+- **File Organization**: Moved all data files to organized folder structure
+  - Input files: `data/input/`
+  - Output files: `data/output/`
+  - Example files: `data/examples/`
+  - Local images: `data/local_images/` (moved from `images_to_upload/`)
+- **Simplified .gitignore**: Removed redundant entries and organized by category
+- **Updated File Paths**: All scripts now use the new data folder structure
+- **Enhanced Setup**: `setup.py` now creates the complete folder structure
+- **PROJECT_RULES.md**: Now references CHANGELOG.md for version history instead of maintaining separate versions
+- **Python Version Support**: Updated to support Python 3.9-3.13 (dropped 3.7-3.8)
+- **Recommended Python Version**: Python 3.13 for best performance and compatibility
+- **CI/CD Testing**: Updated to test against Python 3.9, 3.10, 3.11, 3.12, and 3.13
+- Updated README with comprehensive virtual environment setup instructions
+- Enhanced documentation structure and organization
+- **Virtual Environment Support**:
+  - Detailed Python 3.13 virtual environment setup instructions
+  - Cross-platform virtual environment activation commands
+  - Virtual environment benefits and best practices documentation
+  - Development environment setup guidelines
+
+#### Removed
+- **images_to_upload folder**: Replaced with organized `data/local_images/` structure
+
+#### Fixed
+- **CSV Writing Bug**: Fixed issue when alt text generation is disabled but existing mappings contain alt text
+- **Path References**: Updated all documentation and scripts to use new file paths
+
+#### Technical Details
+- Maintained backward compatibility for existing functionality
+- All example files use realistic sample data
+- Improved project organization following best practices
+- Enhanced user experience with clearer file structure
