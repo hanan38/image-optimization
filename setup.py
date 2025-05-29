@@ -7,7 +7,6 @@ Run this before using the image upload utility for the first time.
 """
 
 import csv
-import json
 import os
 import subprocess
 import sys
@@ -173,7 +172,7 @@ def run_basic_test():
         from upload_files import load_uploaded_files
 
         # Test basic function
-        uploaded_files = load_uploaded_files()
+        load_uploaded_files()
         print("✅ Core functionality test passed")
         return True
 
@@ -219,10 +218,10 @@ def main():
     # Always create directories and files
     create_directories()
     create_sample_files()
-    env_config_ok = create_env_file()
+    env_ok = create_env_file()
 
     # Check AWS config
-    aws_config_ok = check_aws_config()
+    aws_ok = check_aws_config()
 
     # Test AltText.ai if configured
     alttext_ok = test_alttext_ai()
@@ -233,7 +232,7 @@ def main():
     print("\n" + "=" * 50)
     print("📋 Setup Summary:")
 
-    if all(checks) and basic_test_ok:
+    if all(checks) and basic_test_ok and env_ok and aws_ok:
         print("✅ Environment setup completed successfully!")
         print("")
         print("🎉 You're ready to start uploading images!")

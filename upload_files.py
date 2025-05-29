@@ -1,12 +1,10 @@
 import argparse
 import csv
-import io
 import json
 import os
 import tempfile
 import time
 import urllib.parse
-from pathlib import Path
 
 import boto3
 import requests
@@ -449,7 +447,7 @@ def download_and_upload_from_csv(
     # Read URLs from CSV file (skip header row)
     with open(CSV_INPUT_FILE, "r") as csv_file:
         csv_reader = csv.reader(csv_file)
-        header = next(csv_reader, None)  # Skip header row
+        next(csv_reader, None)  # Skip header row
 
         for row in csv_reader:
             if not row or not row[0].strip():
@@ -879,7 +877,10 @@ if __name__ == "__main__":
 
     # If run directly, you can still use the original function
     if os.environ.get("FLASK_RUN", "0") == "1":
-        app.run(host="0.0.0.0", port=5000, debug=True)
+        # Use environment variables for security
+        host = os.environ.get("FLASK_HOST", "127.0.0.1")  # Default to localhost only
+        debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+        app.run(host=host, port=5000, debug=debug)
     elif os.environ.get("PROCESS_CSV", "0") == "1":
         # Get optimization parameters from environment variables
         max_width_env = os.environ.get("MAX_WIDTH", "")

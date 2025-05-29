@@ -17,7 +17,6 @@ Usage:
     print(alt_text)
 """
 
-import json
 import os
 import time
 from typing import Any, Dict, Optional
