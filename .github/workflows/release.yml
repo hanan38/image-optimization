@@ -1,192 +1,128 @@
-name: Release
+name: Create Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 jobs:
-  create-release:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Get tag name
-      id: tag
-      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Extract tag version
+        id: tag_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
-    - name: Generate changelog
-      id: changelog
-      run: |
-        # Get the previous tag
-        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-        
-        if [ -z "$PREVIOUS_TAG" ]; then
-          echo "## Changes" > CHANGELOG.md
-          echo "Initial release" >> CHANGELOG.md
-        else
-          echo "## Changes since $PREVIOUS_TAG" > CHANGELOG.md
-          echo "" >> CHANGELOG.md
+      - name: Extract changelog content
+        id: changelog
+        run: |
+          VERSION="${{ steps.tag_version.outputs.VERSION }}"
+          echo "Extracting changelog for version: $VERSION"
           
-          # Get commits since last tag
-          git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD >> CHANGELOG.md
-        fi
-        
-        # Add contributors
-        echo "" >> CHANGELOG.md
-        echo "## Contributors" >> CHANGELOG.md
-        git log --pretty=format:"- %an" $PREVIOUS_TAG..HEAD | sort | uniq >> CHANGELOG.md
-        
-        # Set output for release notes
-        echo "changelog<<EOF" >> $GITHUB_OUTPUT
-        cat CHANGELOG.md >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-
-    - name: Create Release Archive
-      run: |
-        # Create a clean archive without sensitive files
-        mkdir -p release-archive
-        
-        # Copy core files
-        cp *.py release-archive/
-        cp *.sh release-archive/
-        cp *.txt release-archive/
-        cp *.md release-archive/
-        cp LICENSE release-archive/
-        cp env.example release-archive/
-        
-        # Copy directories
-        cp -r images_to_upload release-archive/ 2>/dev/null || mkdir -p release-archive/images_to_upload
-        
-        # Create archive
-        cd release-archive
-        tar -czf ../cloudfront-image-utility-${{ steps.tag.outputs.tag }}.tar.gz .
-        cd ..
-        
-        # Create zip for Windows users
-        cd release-archive
-        zip -r ../cloudfront-image-utility-${{ steps.tag.outputs.tag }}.zip .
-        cd ..
-
-    - name: Validate release
-      run: |
-        echo "🔍 Validating release archive..."
-        
-        # Extract and test the archive
-        mkdir test-release
-        cd test-release
-        tar -xzf ../cloudfront-image-utility-${{ steps.tag.outputs.tag }}.tar.gz
-        
-        # Check core files exist
-        required_files=("upload_files.py" "alttext_ai.py" "setup.py" "requirements.txt" "README.md" "LICENSE")
-        for file in "${required_files[@]}"; do
-          if [ -f "$file" ]; then
-            echo "✅ $file exists in release"
-          else
-            echo "❌ $file missing from release"
-            exit 1
+          # Extract the specific version content from CHANGELOG.md
+          # Look for the version header and extract content until the next version header
+          awk "/^## \[.*$VERSION.*\]/{flag=1; next} /^## \[/{if(flag) exit} flag && /^### |^- |^[A-Z]/ {print}" CHANGELOG.md > release_notes.md
+          
+          # If no specific content found, use a generic message
+          if [ ! -s release_notes.md ]; then
+            echo "Release $VERSION" > release_notes.md
+            echo "" >> release_notes.md
+            echo "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed release notes." >> release_notes.md
           fi
-        done
-        
-        # Test Python imports
-        python -c "import upload_files; print('✅ upload_files imports successfully')"
-        python -c "import alttext_ai; print('✅ alttext_ai imports successfully')"
-        
-        cd ..
+          
+          echo "Generated release notes:"
+          cat release_notes.md
 
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.tag }}
-        release_name: CloudFront Image Utility ${{ steps.tag.outputs.tag }}
-        body: |
-          # CloudFront Image Upload Utility ${{ steps.tag.outputs.tag }}
+      - name: Create Release Archive
+        run: |
+          # Create a clean archive without sensitive files
+          mkdir -p release-archive
           
-          A comprehensive tool for downloading, optimizing, and uploading images to AWS S3 with CloudFront distribution, featuring AI-powered alt text generation.
+          # Copy core files
+          cp *.py release-archive/ 2>/dev/null || true
+          cp *.sh release-archive/ 2>/dev/null || true
+          cp *.txt release-archive/ 2>/dev/null || true
+          cp *.md release-archive/ 2>/dev/null || true
+          cp LICENSE release-archive/ 2>/dev/null || true
+          cp .env.example release-archive/ 2>/dev/null || true
           
-          ## 🚀 Quick Start
+          # Copy data directory structure
+          cp -r data release-archive/ 2>/dev/null || mkdir -p release-archive/data
           
-          1. Download and extract the archive
-          2. Install dependencies: `pip install -r requirements.txt`
-          3. Run setup: `python setup.py`
-          4. Configure your `.env` file
-          5. Start processing: `./process_csv.sh`
+          # Create archive
+          cd release-archive
+          tar -czf ../cloudfront-image-utility-${{ steps.tag_version.outputs.VERSION }}.tar.gz .
+          cd ..
           
-          ## 📋 What's New
-          
-          ${{ steps.changelog.outputs.changelog }}
-          
-          ## 📥 Downloads
-          
-          - **Linux/macOS**: Download the `.tar.gz` file
-          - **Windows**: Download the `.zip` file
-          - **Source**: Use the "Source code" links below
-          
-          ## 🛠 Requirements
-          
-          - Python 3.7+
-          - AWS account with S3/CloudFront access
-          - AltText.ai API key (optional)
-          
-          ## 📚 Documentation
-          
-          - [README](https://github.com/cagrisarigoz/image-optimization/blob/main/README.md)
-          - [Contributing Guidelines](https://github.com/cagrisarigoz/image-optimization/blob/main/CONTRIBUTING.md)
-          - [Project Rules](https://github.com/cagrisarigoz/image-optimization/blob/main/PROJECT_RULES.md)
-          
-          ## 🐛 Issues & Support
-          
-          If you encounter any issues, please [create an issue](https://github.com/cagrisarigoz/image-optimization/issues/new) on GitHub.
-          
-          ---
-          
-          **Created by**: [Cagri Sarigoz](https://github.com/cagrisarigoz)  
-          **License**: MIT
-        draft: false
-        prerelease: false
+          # Create zip for Windows users
+          cd release-archive
+          zip -r ../cloudfront-image-utility-${{ steps.tag_version.outputs.VERSION }}.zip .
+          cd ..
 
-    - name: Upload Release Archive (tar.gz)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./cloudfront-image-utility-${{ steps.tag.outputs.tag }}.tar.gz
-        asset_name: cloudfront-image-utility-${{ steps.tag.outputs.tag }}.tar.gz
-        asset_content_type: application/gzip
+      - name: Validate release
+        run: |
+          echo "🔍 Validating release archive..."
+          
+          # Extract and test the archive
+          mkdir test-release
+          cd test-release
+          tar -xzf ../cloudfront-image-utility-${{ steps.tag_version.outputs.VERSION }}.tar.gz
+          
+          # Check core files exist
+          required_files=("upload_files.py" "alttext_ai.py" "setup.py" "requirements.txt" "README.md" "LICENSE")
+          for file in "${required_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file exists in release"
+            else
+              echo "❌ $file missing from release"
+              exit 1
+            fi
+          done
+          
+          # Test Python imports
+          python -c "import upload_files; print('✅ upload_files imports successfully')"
+          python -c "import alttext_ai; print('✅ alttext_ai imports successfully')"
+          
+          cd ..
 
-    - name: Upload Release Archive (zip)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./cloudfront-image-utility-${{ steps.tag.outputs.tag }}.zip
-        asset_name: cloudfront-image-utility-${{ steps.tag.outputs.tag }}.zip
-        asset_content_type: application/zip
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag_version.outputs.VERSION }}
+          name: Release ${{ steps.tag_version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            cloudfront-image-utility-${{ steps.tag_version.outputs.VERSION }}.tar.gz
+            cloudfront-image-utility-${{ steps.tag_version.outputs.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   notify-release:
-    needs: create-release
+    needs: release
     runs-on: ubuntu-latest
     steps:
-    - name: Notify about release
-      run: |
-        echo "🎉 Release ${{ github.ref_name }} has been created!"
-        echo "📦 Archives have been uploaded to the release"
-        echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" 
+      - name: Notify about release
+        run: |
+          echo "🎉 Release ${{ github.ref_name }} has been created!"
+          echo "📦 Archives have been uploaded to the release"
+          echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" 
