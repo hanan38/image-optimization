@@ -3,75 +3,45 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
 
 # Virtual environments
 venv/
 env/
 ENV/
 
-# Environment files (contains API keys)
+# Environment file
 .env
-.env.local
-.env.production
-*.env
 
-# AWS credentials (keep these secure!)
-# Note: Consider using environment variables instead
-# aws_credentials.py
-# .aws/
+# Data files (actual data, not examples)
+data/input/*.csv
+data/output/*.csv
+data/output/*.json
 
-# Data files that may contain sensitive URLs
-# Uncomment these if you want to exclude data files:
-# uploaded_files.json
-# images_mapping.csv
-# images_to_download_and_upload.csv
+# Downloaded and local images  
+data/local_images/*.jpg
+data/local_images/*.jpeg
+data/local_images/*.png
+data/local_images/*.gif
+data/local_images/*.webp
+data/local_images/*.bmp
+data/local_images/*.tiff
+data/local_images/*.avif
+data/local_images/*.heic
 
-# Downloaded images
-images_to_upload/*.jpg
-images_to_upload/*.jpeg
-images_to_upload/*.png
-images_to_upload/*.gif
-images_to_upload/*.webp
-images_to_upload/*.bmp
-images_to_upload/*.tiff
-
-# Alt text output files
-local_files_alt_text.csv
-
-# Backup files
+# Logs and temporary files
+*.log
+*.tmp
 *.backup
 *.bak
 *~
 
-# Logs
-*.log
-
 # OS files
 .DS_Store
-.DS_Store?
 ._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
 # IDE files
@@ -80,94 +50,6 @@ Thumbs.db
 *.swp
 *.swo
 
-# Temporary files
-tmp/
-temp/
-*.tmp
-
 # Test files
 test_*.csv
-test_*.json 
-
-# General
-.DS_Store
-.AppleDouble
-.LSOverride
-.idea
-
-# Icon must end with two \r
-Icon
-
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-# Pycharm project files
-.idea
-
-# Data files
-*.mp3
-*.csv
-*.json
-*.xml
-*.xlsx
-*.xls
-*.docx
-*.doc
-*.pptx
-*.ppt
-*.txt
-*.jpg
-*.png
-*.jpeg
-*.gif
-*.bmp
-*.tiff
-*.ico
-*.webp
-*.heic
-*.heif
-*.hevc
-*.avif
-*.heif
-*.hevc
-*.avif
-*.heif
-*.hevc
-*.avif
-*.pdf
-*.svg
-
-# Jupyter Checkpoints
-iPython Notebooks/.ipynb_checkpoints
-iPython Notebooks/data
-iPython Notebooks/city-llp-hero-images
-
-# Airplane
-airplane_scripts/__pycache__
-*.pyc
-
-
-sms_analysis/violation_report.md
-sms_analysis/sms_subscriptions_api.md
-converters/html_to_markdown/data/**/*.md
-converters/html_to_markdown/data/**/*.html
-
-*.bak*
-*.log
+test_*.json

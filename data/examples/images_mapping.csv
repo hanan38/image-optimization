@@ -1,0 +1,2 @@
+source_url,cloudfront_url,max_width,quality,smart_format,alt_text
+https://example.com/sample-image.jpg,https://cdn.example.com/sample_image_123456789.webp,800,85,True,"Sample alt text description" 

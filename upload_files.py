@@ -34,10 +34,11 @@ S3_BUCKET = os.getenv('S3_BUCKET')
 CLOUDFRONT_DOMAIN = os.getenv('CLOUDFRONT_DOMAIN')
 # Remove the path prefix
 # CLOUDFRONT_PATH_PREFIX = 'images/'  # This should match your CloudFront/S3 configuration
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'images_to_upload')
-JSON_FILE = os.path.join(os.path.dirname(__file__), 'uploaded_files.json')
-CSV_INPUT_FILE = os.path.join(os.path.dirname(__file__), 'images_to_download_and_upload.csv')
-CSV_OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'images_mapping.csv')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'local_images')
+JSON_FILE = os.path.join(os.path.dirname(__file__), 'data', 'output', 'uploaded_files.json')
+CSV_INPUT_FILE = os.path.join(os.path.dirname(__file__), 'data', 'input', 'images_to_download_and_upload.csv')
+CSV_OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'data', 'output', 'images_mapping.csv')
+LOCAL_ALT_TEXT_FILE = os.path.join(os.path.dirname(__file__), 'data', 'output', 'local_files_alt_text.csv')
 
 # Default optimization parameters
 DEFAULT_QUALITY = 82
@@ -334,13 +335,12 @@ def upload_files(max_width=DEFAULT_MAX_WIDTH, quality=DEFAULT_QUALITY, smart_for
     
     # Save alt text information to a separate CSV if any were generated
     if files_with_alt_text:
-        alt_text_csv = os.path.join(os.path.dirname(__file__), 'local_files_alt_text.csv')
-        with open(alt_text_csv, 'w', newline='') as csv_file:
+        with open(LOCAL_ALT_TEXT_FILE, 'w', newline='') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=['filename', 'cloudfront_url', 'alt_text'])
             csv_writer.writeheader()
             for item in files_with_alt_text:
                 csv_writer.writerow(item)
-        print(f"📄 Alt text saved to {alt_text_csv}")
+        print(f"📄 Alt text saved to {LOCAL_ALT_TEXT_FILE}")
     
     return uploaded_files
 
@@ -590,7 +590,9 @@ def download_and_upload_from_csv(max_width=DEFAULT_MAX_WIDTH, quality=DEFAULT_QU
         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         csv_writer.writeheader()
         for item in url_mapping:
-            csv_writer.writerow(item)
+            # Only include fields that are in fieldnames
+            filtered_item = {k: v for k, v in item.items() if k in fieldnames}
+            csv_writer.writerow(filtered_item)
     
     print(f"Download and upload complete. Processed {len(url_mapping)} URLs.")
     print(f"URL mapping saved to {CSV_OUTPUT_FILE}")

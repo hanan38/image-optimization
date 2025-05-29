@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-CloudFront URL Mapping Regeneration Tool
+CloudFront URL Regeneration Utility
 
 This utility rebuilds the images_mapping.csv file from the uploaded_files.json data.
-Useful when the mapping file is corrupted, missing, or needs to be rebuilt.
+It's useful when you need to regenerate the mapping file or when CloudFront URLs have changed.
+
+Input files:
+- data/output/uploaded_files.json (contains current S3 objects)
+- data/input/images_to_download_and_upload.csv (contains original source URLs)
+
+Output files:
+- data/output/images_mapping.csv (rebuilt mapping file)
 
 Usage:
     python regenerate_urls.py
-
-Requirements:
-    - uploaded_files.json (contains current S3 objects)
-    - images_to_download_and_upload.csv (contains original source URLs)
-
-Output:
-    - images_mapping.csv (rebuilt mapping file)
 """
 
 import json
@@ -21,9 +21,9 @@ import csv
 import os
 
 # File paths
-JSON_FILE = 'uploaded_files.json'
-CSV_INPUT_FILE = 'images_to_download_and_upload.csv'
-CSV_OUTPUT_FILE = 'images_mapping.csv'
+JSON_FILE = 'data/output/uploaded_files.json'
+CSV_INPUT_FILE = 'data/input/images_to_download_and_upload.csv'
+CSV_OUTPUT_FILE = 'data/output/images_mapping.csv'
 
 def regenerate_mapping():
     """Regenerate the images_mapping.csv with correct CloudFront URLs from uploaded_files.json"""

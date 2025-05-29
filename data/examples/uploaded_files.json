@@ -1,0 +1,11 @@
+{
+  "sample_image_123456789.webp": {
+    "original_url": "https://example.com/sample-image.jpg",
+    "cloudfront_url": "https://cdn.example.com/sample_image_123456789.webp",
+    "alt_text": "Sample alt text description",
+    "upload_time": "2025-01-20T10:30:00Z",
+    "file_size": "45KB",
+    "format": "webp",
+    "optimization_applied": true
+  }
+} 

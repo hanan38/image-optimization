@@ -1,6 +1,12 @@
 # CloudFront Image Upload Utility
 
+> **Created by [Cagri Sarigoz](https://github.com/cagrisarigoz)** | **Open Source** | **MIT License**
+
 A comprehensive tool for downloading, optimizing, and uploading images to AWS S3 with CloudFront distribution. Features automatic image optimization, format conversion, unique URL generation, and **AI-powered alt text generation** for accessibility and SEO.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ## 🚀 Features
 
@@ -8,454 +14,615 @@ A comprehensive tool for downloading, optimizing, and uploading images to AWS S3
 - **Image Optimization**: Automatic resizing, quality adjustment, and format conversion
 - **Smart Format Selection**: Automatically chooses the best format (JPEG, PNG, WebP) for optimal file size
 - **Unique URLs**: Adds timestamps to prevent filename conflicts and ensure cache busting
-- **AI Alt Text Generation**: Generate descriptive alt text using AltText.ai API 🆕
+- **AI Alt Text Generation**: Generate descriptive alt text using AltText.ai API
 - **REST API**: HTTP endpoints for programmatic access
+- **Interactive CLI**: User-friendly command-line interface
 - **Comprehensive Logging**: Detailed progress tracking and error reporting
-
-## 📋 Prerequisites
-
-- Python 3.7+
-- AWS S3 bucket with CloudFront distribution
-- AWS credentials with S3 upload permissions
-- **AltText.ai API key** (optional, for alt text generation)
-
-## 🚀 Quick Start
-
-### First Time Setup
-
-```bash
-# 1. Run setup (automatically installs dependencies)
-python setup.py
-
-# 2. Configure AWS credentials in upload_files.py (lines 18-21)
-# Edit: AWS_ACCESS_KEY, AWS_SECRET_KEY, S3_BUCKET, CLOUDFRONT_DOMAIN
-
-# 3. (Optional) Add AltText.ai API key to .env file for alt text generation
-# ALTTEXT_AI_API_KEY=your_api_key_here
-```
-
-### Most Common Operation: Process Images from CSV
-
-```bash
-# 1. Add URLs to images_to_download_and_upload.csv
-# 2. Run the batch processor
-./process_csv.sh
-# 3. Choose options including alt text generation 🆕
-# 4. Check results in images_mapping.csv
-```
 
 ## 🛠 Installation
 
-1. **Install Dependencies**:
+### Prerequisites
+
+- **Python 3.9+** (Recommended: Python 3.13 for best performance)
+- **AWS account** with S3 and CloudFront access
+- **AltText.ai API key** (optional, for alt text generation)
+
+### Recommended Setup with Python 3.13 Virtual Environment
+
+For the best and most consistent experience, we recommend using Python 3.13 with a virtual environment:
+
+#### 1. Install Python 3.13
+
+**macOS (using Homebrew):**
+```bash
+brew install python@3.13
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install python3.13 python3.13-venv python3.13-pip
+```
+
+**Windows:**
+Download from [python.org](https://www.python.org/downloads/) or use Windows Store.
+
+**Verify installation:**
+```bash
+python3.13 --version
+# Should output: Python 3.13.x
+```
+
+#### 2. Create and Activate Virtual Environment
+
+**Create virtual environment:**
+```bash
+# Clone the repository first
+git clone https://github.com/cagrisarigoz/image-optimization.git
+cd image-optimization
+
+# Create virtual environment with Python 3.13
+python3.13 -m venv venv
+
+# Alternative if python3.13 is your default python
+python -m venv venv
+```
+
+**Activate virtual environment:**
+
+**Linux/macOS:**
+```bash
+source venv/bin/activate
+```
+
+**Windows (Command Prompt):**
+```cmd
+venv\Scripts\activate
+```
+
+**Windows (PowerShell):**
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+**Verify activation:**
+```bash
+which python  # Should point to venv/bin/python
+python --version  # Should show Python 3.13.x
+```
+
+#### 3. Install Dependencies
+
+```bash
+# Upgrade pip to latest version
+python -m pip install --upgrade pip
+
+# Install project dependencies
+pip install -r requirements.txt
+```
+
+#### 4. Run Setup
+
+```bash
+python setup.py
+```
+
+#### 5. Configure Environment
+
+```bash
+# Copy environment template
+cp env.example .env
+
+# Edit .env with your credentials (use your preferred editor)
+nano .env  # or vim .env, code .env, etc.
+```
+
+### Quick Start (Alternative Method)
+
+If you prefer a simpler setup or already have Python 3.9+ installed:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/cagrisarigoz/image-optimization.git
+   cd image-optimization
+   ```
+
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Run Setup Script**:
+3. **Run setup**:
    ```bash
    python setup.py
    ```
-   This will:
-   - Check dependencies and install missing ones
-   - Create required directories and files
-   - Create environment file template for API keys
-   - Test connections
 
-3. **Configure Credentials**: 
-   - **AWS**: Update AWS credentials in `upload_files.py` (lines 18-21)
-   - **AltText.ai**: Add your API key to `.env` file:
-     ```
-     ALTTEXT_AI_API_KEY=your_api_key_here
-     ALTTEXT_AI_KEYWORDS=optional,seo,keywords
-     ```
-
-## 📚 Usage Methods
-
-### Method 1: Batch Processing from CSV (Recommended)
-
-1. **Prepare Input File**: Create `images_to_download_and_upload.csv`:
-   ```csv
-   URL
-   https://example.com/image1.jpg
-   https://example.com/image2.png
-   https://example.com/image3.jpeg
-   ```
-
-2. **Run the Processing Script**:
+4. **Configure environment**:
    ```bash
-   ./process_csv.sh
+   cp env.example .env
+   # Edit .env with your credentials
    ```
 
-3. **Configure Options**: You'll be prompted to set:
-   - **Max width**: Maximum pixel width for resizing (empty = no resizing)
-   - **Quality**: JPEG/WebP quality 1-100 (default: 82)
-   - **Smart format**: Auto-select best format (default: yes)
-   - **Generate alt text**: Use AltText.ai for descriptions (default: no) 🆕
-   - **Alt text keywords**: SEO keywords for optimization (optional) 🆕
-   - **Verbose mode**: Enable detailed logging (default: no)
+### Virtual Environment Benefits
 
-4. **View Results**: Check `images_mapping.csv` for the original URL to CloudFront URL mappings with alt text.
+Using a virtual environment provides several advantages:
 
-### Method 2: Upload Local Files
+- **Isolation**: Dependencies don't conflict with system packages
+- **Reproducibility**: Consistent environment across different machines
+- **Version Control**: Lock specific package versions
+- **Clean Uninstall**: Easy to remove by deleting the venv folder
+- **Multiple Projects**: Different Python versions for different projects
+
+### Deactivating Virtual Environment
+
+When you're done working on the project:
 
 ```bash
-# Put files in images_to_upload/ directory
-python upload_files.py
-
-# With alt text generation
-export GENERATE_ALT_TEXT=1
-export ALT_TEXT_KEYWORDS="product,clothing,fashion"
-python upload_files.py
+deactivate
 ```
 
-### Method 3: REST API
+### Requirements
 
-1. **Start the Server**:
-   ```bash
-   export FLASK_RUN=1
-   python upload_files.py
-   # Server runs on http://localhost:5000
-   ```
+- **Python 3.9+** (Tested on 3.9, 3.10, 3.11, 3.12, 3.13)
+- **AWS account** with S3 and CloudFront access
+- **AltText.ai API key** (optional, for alt text generation)
 
-2. **Upload with Alt Text**:
-   ```bash
-   curl -X POST -F "file=@/path/to/image.jpg" \
-        -F "max_width=600" \
-        -F "quality=82" \
-        -F "smart_format=true" \
-        -F "generate_alt_text=true" \
-        -F "alt_text_keywords=product,ecommerce" \
-        http://localhost:5000/upload
-   ```
+## ⚡ Quick Usage
 
-3. **Process CSV with Alt Text**:
-   ```bash
-   curl -X GET "http://localhost:5000/process-csv?max_width=600&quality=82&smart_format=true&generate_alt_text=true&alt_text_keywords=business,marketing"
-   ```
-
-## 🤖 Alt Text Generation (AltText.ai Integration)
-
-### Overview
-The system includes **optional alt text generation** using the AltText.ai API. This feature automatically generates descriptive alt text for images during processing, enhancing accessibility and SEO.
-
-### Features
-- **AI-Powered**: Uses AltText.ai's advanced computer vision
-- **SEO Optimized**: Include custom keywords for better search ranking
-- **Accessibility**: Improve website accessibility compliance
-- **Batch Processing**: Generate alt text for hundreds of images at once
-- **CSV Export**: Alt text included in output mapping files
-- **Optional Integration**: Can be enabled/disabled as needed
-
-### Setup
-1. **Get API Key**: Sign up at [AltText.ai](https://alttext.ai) 
-2. **Configure**: Add key to `.env` file:
-   ```bash
-   # AltText.ai API Configuration
-   ALTTEXT_AI_API_KEY=your_api_key_here
-   
-   # Optional: Custom keywords for SEO optimization
-   ALTTEXT_AI_KEYWORDS=car shipping, vehicle transport
-   
-   # Optional: Webhook URL for asynchronous processing
-   ALTTEXT_AI_WEBHOOK_URL=
-   ```
-3. **Test**: Run `python setup.py` to verify connection
-
-### Usage Examples
-
-**Interactive Mode (Recommended):**
+### Interactive CSV Processing
 ```bash
 ./process_csv.sh
-# Follow prompts to enable alt text generation
 ```
 
-**Automated Mode:**
+### Direct Python Usage
+```python
+from upload_files import download_and_upload_from_csv
+
+# Process images with alt text generation
+download_and_upload_from_csv(
+    generate_alt_text=True,
+    alt_text_keywords="product, ecommerce, lifestyle"
+)
+```
+
+### REST API
 ```bash
-# Enable alt text generation
+# Start the API server
+export FLASK_RUN=1
+python upload_files.py
+
+# Upload a file
+curl -X POST -F "file=@image.jpg" http://localhost:5000/upload
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file with your configuration:
+
+```bash
+# AWS Configuration (Required)
+AWS_ACCESS_KEY=your_aws_access_key
+AWS_SECRET_KEY=your_aws_secret_key
+S3_BUCKET=your_s3_bucket_name
+CLOUDFRONT_DOMAIN=your_cloudfront_domain
+
+# AltText.ai Configuration (Optional)
+ALTTEXT_AI_API_KEY=your_alttext_ai_api_key
+ALTTEXT_AI_KEYWORDS=default,keywords,for,seo
+ALTTEXT_AI_WEBHOOK_URL=your_webhook_url
+```
+
+### CSV Input Format
+
+Create `data/input/images_to_download_and_upload.csv`:
+
+```csv
+URL
+https://example.com/image1.jpg
+https://example.com/image2.png
+https://example.com/image3.webp
+```
+
+## 🎯 Usage Examples
+
+### 1. Basic CSV Processing
+
+```bash
+# Interactive mode with prompts
+./process_csv.sh
+
+# Follow the prompts to configure:
+# - Alt text generation (Y/N)
+# - Keywords for SEO
+# - Image optimization settings
+# - Quality and format options
+```
+
+### 2. Automated Processing
+
+```bash
+# Set environment variables for automation
 export PROCESS_CSV=1
 export GENERATE_ALT_TEXT=true
-export ALT_TEXT_KEYWORDS="car shipping, vehicle transport, RV transport"
-export MAX_WIDTH=800
+export ALT_TEXT_KEYWORDS="product, lifestyle, modern"
+export MAX_WIDTH=1200
 export QUALITY=85
 export SMART_FORMAT=true
 
 python upload_files.py
 ```
 
-**API Testing:**
+### 3. Local File Upload
+
+```python
+from upload_files import upload_files
+
+# Upload local files with optimization
+upload_files(
+    max_width=800,
+    quality=82,
+    smart_format=True,
+    generate_alt_text=True
+)
+```
+
+### 4. REST API Usage
+
 ```bash
-# Test API connection
-python -c "from alttext_ai import test_alttext_ai_connection; test_alttext_ai_connection()"
+# Start the server
+export FLASK_RUN=1
+python upload_files.py &
 
-# Test alt text generation
-python -c "from alttext_ai import generate_alt_text; print(generate_alt_text('https://example.com/image.jpg'))"
+# Upload single file
+curl -X POST -F "file=@photo.jpg" http://localhost:5000/upload
 
-# Generate alt text for single image with keywords
-python alttext_ai.py https://example.com/image.jpg "keywords,here"
+# List uploaded files
+curl http://localhost:5000/files
+
+# Process CSV via API
+curl http://localhost:5000/process-csv
 ```
 
-### Example Output
-When alt text generation is enabled, the output CSV includes an additional `alt_text` column:
+## 🤖 AI Alt Text Generation
 
-```csv
-source_url,cloudfront_url,max_width,quality,smart_format,alt_text
-https://example.com/image.jpg,https://cdn.example.com/optimized.webp,800,85,True,"A blue golf cart parked on a grassy slope next to a golf course path, surrounded by trees and greenery."
+### Features
+- **Automatic descriptions**: Generate descriptive alt text for accessibility
+- **SEO optimization**: Include custom keywords for better search rankings
+- **Batch processing**: Generate alt text for multiple images efficiently
+- **Fallback handling**: Graceful degradation when API is unavailable
+
+### Configuration
+```bash
+# Enable alt text generation
+ALTTEXT_AI_API_KEY=your_api_key
+ALTTEXT_AI_KEYWORDS=product,ecommerce,lifestyle,modern
+
+# Optional webhook for async processing
+ALTTEXT_AI_WEBHOOK_URL=https://your-domain.com/webhook
 ```
 
-### Real Examples from Test Run
+### Usage
+```python
+from alttext_ai import generate_alt_text
 
-| Image Type | Generated Alt Text |
-|------------|-------------------|
-| Golf Cart | "A blue golf cart is parked on a grassy slope next to a golf course path, surrounded by trees and greenery." |
-| Car Transport | "A car carrier truck transports multiple white sedans stacked in two rows on an open trailer, parked on a city street beside a large building." |
-| RV Transport | "Shipping an RV with a red truck." |
-| Container Shipping | "A Toyota SUV is loaded inside a red shipping container with the container door open, showing weight and capacity specifications." |
-
-## ⚙️ Configuration Options
-
-| Parameter | Description | Default | Example |
-|-----------|-------------|---------|---------|
-| `max_width` | Maximum image width in pixels | None (no resizing) | `600`, `1200` |
-| `quality` | JPEG/WebP quality (1-100) | `82` | `75`, `90` |
-| `smart_format` | Auto-select best format | `true` | `true`, `false` |
-| `add_timestamp` | Add timestamp to filename | `true` | `true`, `false` |
-| `generate_alt_text` | Generate AI alt text | `false` | `true`, `false` 🆕 |
-| `alt_text_keywords` | SEO keywords for alt text | None | `"product,clothing"` 🆕 |
-
-### Quick Configuration Recommendations
-
-| Setting | Recommended | Description |
-|---------|-------------|-------------|
-| Max Width | `600` | Good for web display |
-| Quality | `82` | Balance of quality/size |
-| Smart Format | `true` | Auto-optimize format |
-| Alt Text | `true` | Generate descriptions 🆕 |
-| Keywords | `"product,business"` | SEO optimization 🆕 |
-
-### Environment Variables
-- `ALTTEXT_AI_API_KEY` - Your AltText.ai API key (required)
-- `ALTTEXT_AI_KEYWORDS` - Default keywords for SEO (optional)
-- `ALTTEXT_AI_WEBHOOK_URL` - Webhook for async processing (optional)
-- `GENERATE_ALT_TEXT` - Enable/disable alt text generation (true/false)
-- `ALT_TEXT_KEYWORDS` - Keywords for current processing session
-
-## 🖼 Image Optimization Details
-
-### Format Selection Algorithm
-
-The tool tests each image in multiple formats and selects the smallest:
-
-1. **JPEG**: Best for photographs and complex images
-2. **PNG**: Best for images with transparency or sharp edges  
-3. **WebP**: Modern format with superior compression for most images
-4. **GIF**: Preserved as-is to maintain animation
-
-### Optimization Process
-
-1. **Download**: Fetches image from source URL with proper headers
-2. **Resize**: Reduces dimensions if width exceeds `max_width`
-3. **Format Test**: Converts to JPEG, PNG, and WebP to compare file sizes
-4. **Quality Adjust**: Applies compression based on `quality` setting
-5. **Alt Text**: Generates descriptive text using AI (if enabled) 🆕
-6. **Upload**: Uploads optimized image to S3 with unique timestamp
-7. **URL Generation**: Creates CloudFront URL with timestamp
-
-### Example Optimization Results
-
+# Generate alt text for an image
+alt_text = generate_alt_text(
+    image_url="https://example.com/image.jpg",
+    keywords="product, modern, lifestyle"
+)
+print(f"Generated alt text: {alt_text}")
 ```
-Original: 1600x1200 JPEG (291KB)
-Optimized: 600x450 WebP (29.5KB) - 90% size reduction!
-Alt Text: "Modern office workspace with laptop and coffee cup on wooden desk"
-```
-
-## 📁 File Structure
-
-```
-image-optimization/
-├── upload_files.py              # Main application
-├── alttext_ai.py               # AltText.ai API integration 🆕
-├── process_csv.sh               # Batch processing script
-├── setup.py                     # Setup & dependency checker
-├── check_s3_objects.py          # S3 debugging utility
-├── regenerate_urls.py           # URL mapping regeneration
-├── requirements.txt             # Python dependencies
-├── .env                        # Environment variables (API keys) 🆕
-├── env.example                 # Environment template 🆕
-├── README.md                    # Complete documentation
-├── .gitignore                  # Git exclusions
-├── images_to_download_and_upload.csv  # INPUT: Your image URLs
-├── images_mapping.csv           # OUTPUT: URL mappings with alt text 🆕
-├── local_files_alt_text.csv    # OUTPUT: Local file alt text 🆕
-├── uploaded_files.json          # STATE: Tracks uploads
-└── images_to_upload/            # Local files directory
-```
-
-### Key Files
-
-- `images_to_download_and_upload.csv` - **INPUT**: Your image URLs
-- `images_mapping.csv` - **OUTPUT**: URL mappings with alt text 🆕
-- `local_files_alt_text.csv` - **OUTPUT**: Local file alt text 🆕
-- `uploaded_files.json` - **STATE**: Tracks uploads
-- `.env` - **CONFIG**: API keys and settings 🆕
-- `process_csv.sh` - **SCRIPT**: Main processor
 
 ## 📊 Output Files
 
-### `images_mapping.csv` (Enhanced)
-Maps source URLs to optimized CloudFront URLs with alt text:
+The tool generates several output files in the `data/output/` directory:
+
+### `data/output/images_mapping.csv`
+Maps original URLs to optimized CloudFront URLs with alt text:
 ```csv
 source_url,cloudfront_url,max_width,quality,smart_format,alt_text
-https://example.com/image.jpg,https://cdn.example.com/image_1748441097.webp,600,82,True,"Professional headshot of smiling woman in business attire"
+https://example.com/image1.jpg,https://cdn.example.com/image_123.webp,800,85,True,"Modern lifestyle product photo"
 ```
 
-### `local_files_alt_text.csv` (New)
-Alt text for locally uploaded files:
+### `data/output/uploaded_files.json`
+Tracks upload status and metadata:
+```json
+{
+  "image_123.webp": {
+    "original_url": "https://example.com/image1.jpg",
+    "cloudfront_url": "https://cdn.example.com/image_123.webp",
+    "alt_text": "Modern lifestyle product photo",
+    "upload_time": "2025-01-20T10:30:00Z"
+  }
+}
+```
+
+### `data/output/local_files_alt_text.csv`
+Alt text for local files:
 ```csv
-filename,cloudfront_url,alt_text
-product_image.webp,https://cdn.example.com/product_image_1748441097.webp,"Red running shoes with white sole on gray background"
+filename,alt_text
+photo1.jpg,"Beautiful sunset over mountains"
+product2.png,"Modern smartphone with sleek design"
 ```
 
-## 🔧 Utility Scripts
+## 🔧 Advanced Configuration
 
-### AltText.ai Testing Tool 🆕
+### Image Optimization Settings
+
+```python
+# Customize optimization parameters
+optimize_image(
+    image_path="photo.jpg",
+    max_width=1200,        # Maximum width in pixels
+    quality=85,            # JPEG/WebP quality (1-100)
+    smart_format=True      # Auto-select best format
+)
+```
+
+### Format Selection Logic
+
+The tool automatically selects the best format:
+- **JPEG**: For photos with many colors
+- **PNG**: For images with transparency or few colors
+- **WebP**: For modern browsers (best compression)
+
+### Quality Guidelines
+
+- **90-100**: Highest quality, larger files
+- **80-89**: High quality, good for most use cases
+- **70-79**: Good quality, smaller files
+- **60-69**: Acceptable quality, much smaller files
+
+## 🚀 API Reference
+
+### Endpoints
+
+#### `POST /upload`
+Upload and optimize a single file.
+
+**Request:**
 ```bash
-python alttext_ai.py https://example.com/image.jpg "product,shoes,running"
+curl -X POST -F "file=@image.jpg" \
+     -F "max_width=800" \
+     -F "quality=85" \
+     http://localhost:5000/upload
 ```
 
-### S3 Debugging Tool
+**Response:**
+```json
+{
+  "success": true,
+  "cloudfront_url": "https://cdn.example.com/image_123.webp",
+  "alt_text": "Generated alt text description",
+  "original_size": "150KB",
+  "optimized_size": "45KB",
+  "format": "webp"
+}
+```
+
+#### `GET /files`
+List all uploaded files.
+
+**Response:**
+```json
+{
+  "files": [
+    {
+      "filename": "image_123.webp",
+      "cloudfront_url": "https://cdn.example.com/image_123.webp",
+      "upload_time": "2025-01-20T10:30:00Z"
+    }
+  ]
+}
+```
+
+#### `GET /process-csv`
+Process images from CSV file.
+
+**Response:**
+```json
+{
+  "success": true,
+  "processed": 5,
+  "failed": 0,
+  "output_file": "data/output/images_mapping.csv"
+}
+```
+
+## 🛠 Development
+
+### Project Structure
+
+```
+image-optimization/
+├── Core Application Files
+│   ├── upload_files.py              # Main application & Flask API
+│   ├── alttext_ai.py               # AltText.ai API integration
+│   ├── setup.py                     # Setup & dependency checker
+│   ├── process_csv.sh               # Interactive batch processor
+│   └── requirements.txt             # Python dependencies
+├── Configuration
+│   ├── .env                        # Environment variables (gitignored)
+│   ├── env.example                 # Environment template
+│   └── .gitignore                  # Git exclusions
+├── Data Files
+│   ├── data/
+│   │   ├── input/                  # Input CSV files
+│   │   ├── output/                 # Generated output files
+│   │   ├── examples/               # Example files for reference
+│   │   └── local_images/           # Downloaded/local image files
+├── Utilities
+│   ├── check_s3_objects.py          # S3 debugging utility
+│   └── regenerate_urls.py           # URL mapping regeneration
+└── Documentation & CI/CD
+    ├── README.md                    # Complete documentation
+    ├── CONTRIBUTING.md              # Contribution guidelines
+    ├── PROJECT_RULES.md             # Project rules and standards
+    └── .github/                     # GitHub workflows & templates
+```
+
+### Running Tests
+
 ```bash
-python check_s3_objects.py
+# Test core functionality
+python upload_files.py
+
+# Test AltText.ai integration
+python alttext_ai.py
+
+# Test CSV processing
+./process_csv.sh
+
+# Test API endpoints
+export FLASK_RUN=1
+python upload_files.py &
+curl -X POST -F "file=@test.jpg" http://localhost:5000/upload
 ```
 
-### URL Regeneration Tool
-```bash
-python regenerate_urls.py
-```
-
-## 🔧 Troubleshooting
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-**"AltText.ai API connection failed"**
-- ✅ **Solution**: Check your API key in `.env` file
-- 🔍 **Test**: Run `python setup.py` to verify connection
-
-**"Alt text generation disabled"**
-- ✅ **Solution**: Install python-dotenv: `pip install python-dotenv`
-- 🔍 **Check**: Verify ALTTEXT_AI_API_KEY is set in `.env` file
-
-**"Access Denied" errors**
-- ✅ **Solution**: The script automatically handles this by uploading without ACLs
-- 🔍 **Check**: Verify your CloudFront distribution is properly configured
-
-**"File already processed, skipping"**
-- ✅ **Solution**: The script checks existing mappings to avoid duplicates
-- 🔍 **Force reprocess**: Delete the corresponding entry from `images_mapping.csv`
-
-### Debug Commands
-
+#### Python Version Issues
 ```bash
-# Test AltText.ai connection
-python alttext_ai.py
+# Error: Python version not supported
+# Solution: Upgrade to Python 3.9+
+python --version  # Check current version
 
-# Test S3 bucket access
-python check_s3_objects.py
-
-# Test specific CloudFront URL
-curl -I https://your-cloudfront-domain.net/image_timestamp.webp
-
-# Check environment variables
-python -c "from dotenv import load_dotenv; load_dotenv(); import os; print('API Key configured:', bool(os.getenv('ALTTEXT_AI_API_KEY')))"
-
-# Check S3 bucket and permissions
-python check_s3_objects.py
-
-# Rebuild URL mappings
-python regenerate_urls.py
+# Install Python 3.13 (recommended)
+# See installation instructions above
 ```
 
-## 🎯 Pro Tips
+#### Virtual Environment Issues
+```bash
+# Error: Command not found after activation
+# Solution: Ensure virtual environment is activated
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate     # Windows
 
-1. **Test with a few images first** - Add 2-3 URLs to CSV and test
-2. **Check CloudFront URLs** - Verify they return HTTP 200
-3. **Use timestamps** - Ensures unique URLs and cache busting
-4. **Monitor file sizes** - Smart format can reduce sizes by 80%+
-5. **Generate alt text** - Improves SEO and accessibility 🆕
-6. **Use keywords** - Include relevant terms for better SEO 🆕
-7. **Backup your mappings** - Keep copies of `images_mapping.csv`
-8. **Batch Processing**: Process multiple images in one session
-9. **Optimal Quality**: Use quality 80-85 for good balance
-10. **Smart Resizing**: Set max_width to your typical display size
+# Verify activation
+which python  # Should point to venv directory
+```
 
-## 🔒 Security Notes
+#### AWS Credentials
+```bash
+# Error: AWS credentials not found
+# Solution: Check your .env file
+AWS_ACCESS_KEY=your_key_here
+AWS_SECRET_KEY=your_secret_here
+```
 
-- AWS credentials are currently hardcoded in the script
-- **AltText.ai API key is stored in `.env` file** (gitignored for security)
-- For production use, consider using:
-  - Environment variables
-  - AWS IAM roles
-  - AWS credentials file
-  - AWS Secrets Manager
+#### AltText.ai API
+```bash
+# Error: AltText.ai connection failed
+# Solution: Verify your API key
+python -c "from alttext_ai import test_alttext_ai_connection; test_alttext_ai_connection()"
+```
 
-## 📈 Performance & Benefits
+#### Image Processing
+```bash
+# Error: PIL/Pillow issues
+# Solution: Reinstall Pillow
+pip uninstall Pillow
+pip install Pillow
+```
 
-### Performance Features
-- **Concurrent processing** - Images processed in parallel
-- **Smart caching** - Avoids re-processing existing images
-- **Efficient API usage** - Optimized request patterns
-- **Progress tracking** - Real-time status updates
-- **API Rate Limits**: AltText.ai has generous rate limits for batch processing
+#### Permission Issues
+```bash
+# Error: process_csv.sh permission denied
+# Solution: Make script executable
+chmod +x process_csv.sh
+```
 
-### Alt Text Benefits
+### Debug Mode
 
-#### 🎯 Accessibility
-- **Screen reader support** with descriptive alt text
-- **WCAG compliance** for web accessibility standards
-- **Inclusive design** for users with visual impairments
+Enable verbose logging:
+```bash
+export DEBUG=1
+python upload_files.py
+```
 
-#### 🚀 SEO Optimization
-- **Image search optimization** with descriptive text
-- **Keyword integration** for targeted SEO
-- **Content enrichment** for better search rankings
+### Getting Help
 
-#### ⚡ Automation
-- **Batch processing** for large image sets
-- **Consistent quality** across all images
-- **Time savings** compared to manual alt text creation
-
-## 🔧 Error Handling
-
-The system includes comprehensive error handling:
-
-- **API connectivity issues** - Graceful fallback with clear messages
-- **Invalid API keys** - Clear authentication error messages
-- **Network timeouts** - Retry mechanisms with exponential backoff
-- **Image processing errors** - Continue processing other images
-- **Missing dependencies** - Clear installation instructions
+1. **Check the documentation**: Review this README and [PROJECT_RULES.md](PROJECT_RULES.md)
+2. **Search existing issues**: Look for similar problems in [GitHub Issues](https://github.com/cagrisarigoz/image-optimization/issues)
+3. **Create a new issue**: Use our [bug report template](.github/ISSUE_TEMPLATE/bug_report.md)
+4. **Join discussions**: Participate in [GitHub Discussions](https://github.com/cagrisarigoz/image-optimization/discussions)
 
 ## 🤝 Contributing
 
-To extend the utility:
+We welcome contributions from the community! This project is open source and maintained by [Cagri Sarigoz](https://github.com/cagrisarigoz).
 
-1. **Add new optimization features** in `optimize_image()` function
-2. **Enhance alt text features** in `alttext_ai.py` module
-3. **Add new API endpoints** in the Flask app section
-4. **Improve error handling** in download/upload functions
+### How to Contribute
 
-## 🚀 Future Enhancements
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes**: Follow our [coding standards](PROJECT_RULES.md)
+4. **Test thoroughly**: Ensure your changes work as expected
+5. **Submit a pull request**: Use our [PR template](.github/PULL_REQUEST_TEMPLATE.md)
 
-Potential improvements for future versions:
+### Contribution Areas
 
-- **Batch API requests** for improved efficiency
-- **Custom prompts** for specific alt text styles
-- **Multi-language support** for international content
-- **Alt text validation** and quality scoring
-- **Integration with CMS systems** for direct publishing
+- 🐛 **Bug fixes**: Help improve stability and reliability
+- ✨ **New features**: Add functionality that benefits users
+- 📚 **Documentation**: Improve guides, examples, and API docs
+- 🧪 **Testing**: Add tests and improve coverage
+- 🎨 **UI/UX**: Enhance user experience and interface
+- ⚡ **Performance**: Optimize speed and resource usage
+
+### Development Guidelines
+
+Please read our comprehensive contribution guidelines:
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Detailed contribution process
+- [PROJECT_RULES.md](PROJECT_RULES.md) - Coding standards and conventions
 
 ## 📄 License
 
-This utility is part of the CS Growth Hacks project. Please ensure you have proper AWS permissions and comply with AWS usage policies. AltText.ai usage subject to their terms of service.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### License Summary
+
+- ✅ **Commercial use**: Use in commercial projects
+- ✅ **Modification**: Modify the source code
+- ✅ **Distribution**: Distribute the software
+- ✅ **Private use**: Use for private projects
+- ❗ **License and copyright notice**: Include license in distributions
+
+## 🙏 Acknowledgments
+
+### Creator & Maintainer
+- **[Cagri Sarigoz](https://github.com/cagrisarigoz)** - Original creator and lead maintainer
+
+### Technologies Used
+- **[Python](https://python.org)** - Core programming language
+- **[Pillow (PIL)](https://pillow.readthedocs.io/)** - Image processing library
+- **[Flask](https://flask.palletsprojects.com/)** - Web framework for API
+- **[Boto3](https://boto3.amazonaws.com/)** - AWS SDK for Python
+- **[AltText.ai](https://alttext.ai/)** - AI-powered alt text generation
+
+### Contributors
+
+Contributors will be recognized here as the project grows. See [GitHub Contributors](https://github.com/cagrisarigoz/image-optimization/graphs/contributors) for the current list.
+
+## 🔗 Links
+
+- **Repository**: [https://github.com/cagrisarigoz/image-optimization](https://github.com/cagrisarigoz/image-optimization)
+- **Issues**: [Report bugs and request features](https://github.com/cagrisarigoz/image-optimization/issues)
+- **Discussions**: [Community discussions](https://github.com/cagrisarigoz/image-optimization/discussions)
+- **Releases**: [Download latest version](https://github.com/cagrisarigoz/image-optimization/releases)
+
+## 📊 Project Stats
+
+![GitHub stars](https://img.shields.io/github/stars/cagrisarigoz/image-optimization?style=social)
+![GitHub forks](https://img.shields.io/github/forks/cagrisarigoz/image-optimization?style=social)
+![GitHub issues](https://img.shields.io/github/issues/cagrisarigoz/image-optimization)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/cagrisarigoz/image-optimization)
 
 ---
 
-**Note**: Alt text generation is optional and can be disabled if not needed. The system works perfectly without it, maintaining backward compatibility with existing workflows. 
+**Made with ❤️ by [Cagri Sarigoz](https://github.com/cagrisarigoz)**
+
+*If this project helps you, please consider giving it a ⭐ on GitHub!* 

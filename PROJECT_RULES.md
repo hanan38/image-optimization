@@ -1,8 +1,7 @@
 # Project Rules & Guidelines
 
-**Version**: 1.0  
-**Last Updated**: May 29, 2025  
-**Status**: Living Document
+**Status**: Living Document  
+**Version History**: See [CHANGELOG.md](CHANGELOG.md)  
 
 This document serves as a comprehensive guide for AI models and developers working with the CloudFront Image Upload Utility repository. It outlines project structure, coding standards, conventions, and best practices.
 
@@ -36,12 +35,19 @@ CloudFront Image Upload Utility is a comprehensive tool for downloading, optimiz
 5. **REST API**: HTTP endpoints for programmatic access
 
 ### Technology Stack
-- **Language**: Python 3.7+
+- **Language**: Python 3.9+ (Recommended: Python 3.13)
 - **Cloud**: AWS S3 + CloudFront
 - **AI Service**: AltText.ai API
 - **Image Processing**: Pillow (PIL)
 - **Web Framework**: Flask
 - **Environment**: python-dotenv
+
+### Supported Python Versions
+- **Python 3.9**: Minimum supported version
+- **Python 3.10**: Fully supported
+- **Python 3.11**: Fully supported
+- **Python 3.12**: Fully supported
+- **Python 3.13**: Recommended (latest stable)
 
 ## 📁 Repository Structure
 
@@ -61,13 +67,19 @@ image-optimization/
 │   ├── env.example                 # Environment template
 │   └── .gitignore                  # Git exclusions
 ├── Data Files
-│   ├── images_to_download_and_upload.csv  # INPUT: Image URLs
-│   ├── images_mapping.csv           # OUTPUT: URL mappings
-│   ├── local_files_alt_text.csv    # OUTPUT: Local file alt text
-│   ├── uploaded_files.json          # STATE: Upload tracking
-│   └── images_to_upload/            # Local files directory
+│   ├── data/
+│   │   ├── input/                  # Input CSV files
+│   │   │   └── images_to_download_and_upload.csv
+│   │   ├── output/                 # Generated output files
+│   │   │   ├── images_mapping.csv
+│   │   │   ├── uploaded_files.json
+│   │   │   └── local_files_alt_text.csv
+│   │   ├── examples/               # Example files for reference
+│   │   └── local_images/           # Downloaded/local image files
 └── Documentation
-    └── README.md                    # Complete documentation
+    ├── README.md                    # Complete documentation
+    ├── CHANGELOG.md                 # Version history and releases
+    └── PROJECT_RULES.md             # This document
 ```
 
 ### File Categories
@@ -137,6 +149,49 @@ image-optimization/
 
 ## 📝 Coding Standards
 
+### Python Version Compatibility
+
+#### **Target Versions**
+- **Primary**: Python 3.13 (recommended for development)
+- **Supported**: Python 3.9, 3.10, 3.11, 3.12, 3.13
+- **Testing**: All supported versions in CI/CD
+
+#### **Version-Specific Guidelines**
+```python
+# Use features available in Python 3.9+
+from typing import Optional, Union, List, Dict, Tuple
+from pathlib import Path
+
+# Avoid features from Python 3.14+ (not yet stable)
+# Use type hints compatible with Python 3.9+
+def process_image(path: str | Path) -> bool:  # ❌ Union syntax (3.10+)
+def process_image(path: Union[str, Path]) -> bool:  # ✅ Compatible with 3.9+
+```
+
+### Development Environment Setup
+
+#### **Virtual Environment (Recommended)**
+```python
+# Create virtual environment with Python 3.13
+python3.13 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # Linux/macOS
+venv\Scripts\activate     # Windows
+
+# Verify Python version
+python --version  # Should show Python 3.13.x
+```
+
+#### **Development Dependencies**
+```bash
+# Core dependencies
+pip install -r requirements.txt
+
+# Development tools
+pip install flake8 black isort mypy bandit safety
+```
+
 ### Python Code Style
 
 #### **Import Organization**
@@ -145,6 +200,8 @@ image-optimization/
 import os
 import json
 import time
+from pathlib import Path
+from typing import Optional, Union, List, Dict, Tuple
 
 # Third-party imports
 import boto3
@@ -157,7 +214,8 @@ from alttext_ai import generate_alt_text
 
 #### **Function Documentation**
 ```python
-def optimize_image(image_path, max_width=None, quality=82, smart_format=True):
+def optimize_image(image_path: str, max_width: Optional[int] = None, 
+                  quality: int = 82, smart_format: bool = True) -> Tuple[bool, str]:
     """
     Optimize an image by resizing, adjusting quality, and choosing the best format
     
@@ -169,6 +227,10 @@ def optimize_image(image_path, max_width=None, quality=82, smart_format=True):
         
     Returns:
         tuple: (success: bool, optimized_path: str)
+        
+    Raises:
+        FileNotFoundError: If image file doesn't exist
+        ValueError: If quality is not in valid range
     """
 ```
 
@@ -379,6 +441,23 @@ print("🔄 Retrying with alternative method...")
 
 ## 🧪 Testing Guidelines
 
+### **Python Version Testing**
+
+#### **Local Testing**
+```bash
+# Test with different Python versions (if available)
+python3.9 upload_files.py
+python3.10 upload_files.py
+python3.11 upload_files.py
+python3.12 upload_files.py
+python3.13 upload_files.py
+```
+
+#### **CI/CD Testing**
+- Automated testing on Python 3.9-3.13
+- Matrix builds for all supported versions
+- Version-specific compatibility checks
+
 ### **Manual Testing**
 
 #### **Core Functionality Tests**
@@ -455,10 +534,13 @@ curl -X GET http://localhost:5000/files
 ## 🚀 Deployment Guidelines
 
 ### **Environment Setup**
-1. Install Python dependencies: `pip install -r requirements.txt`
-2. Run setup script: `python setup.py`
-3. Configure environment variables
-4. Test all integrations
+1. Install Python 3.9+ (recommended: 3.13): `python3.13 --version`
+2. Create virtual environment: `python3.13 -m venv venv`
+3. Activate virtual environment: `source venv/bin/activate`
+4. Install dependencies: `pip install -r requirements.txt`
+5. Run setup script: `python setup.py`
+6. Configure environment variables
+7. Test all integrations
 
 ### **Production Considerations**
 - Use production-grade WSGI server for Flask API
@@ -505,12 +587,11 @@ curl -X GET http://localhost:5000/files
 ### **Update Process**
 1. Identify changes needed
 2. Update relevant sections
-3. Increment version number
-4. Update "Last Updated" date
-5. Review with team if applicable
+3. Review with team if applicable
+4. Document significant changes in [CHANGELOG.md](CHANGELOG.md)
 
 ### **Version History**
-- **v1.0** (January 2025): Initial version with comprehensive guidelines
+All version history and significant changes are tracked in [CHANGELOG.md](CHANGELOG.md). This document focuses on current standards and guidelines rather than historical changes.
 
 ---
 

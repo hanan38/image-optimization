@@ -1,5 +1,37 @@
 #!/bin/bash
 
+# CloudFront Image Upload Utility - Interactive CSV Processor
+# This script provides an interactive interface for processing images from CSV files
+
+echo "🚀 CloudFront Image Upload Utility - CSV Processor"
+echo "=================================================="
+
+# Check if input file exists
+INPUT_FILE="data/input/images_to_download_and_upload.csv"
+if [ ! -f "$INPUT_FILE" ]; then
+    echo "❌ Input file not found: $INPUT_FILE"
+    echo ""
+    echo "📋 Please create the input file with your image URLs:"
+    echo "   mkdir -p data/input"
+    echo "   echo 'URL' > $INPUT_FILE"
+    echo "   echo 'https://example.com/your-image.jpg' >> $INPUT_FILE"
+    echo ""
+    echo "📄 Example files are available in data/examples/"
+    exit 1
+fi
+
+echo "📄 Input file: $INPUT_FILE"
+echo "📊 Output files:"
+echo "   - data/output/images_mapping.csv"
+echo "   - data/output/uploaded_files.json"
+echo "   - data/output/local_files_alt_text.csv (if alt text is generated)"
+echo ""
+
+# Count URLs in input file
+URL_COUNT=$(tail -n +2 "$INPUT_FILE" | grep -v '^#' | grep -v '^$' | wc -l | tr -d ' ')
+echo "🔍 Found $URL_COUNT image URLs to process"
+echo ""
+
 # Prompt for max width
 echo -n "Enter max width (leave empty for no resizing): "
 read max_width
@@ -84,7 +116,7 @@ fi
 # Run the Python script
 python upload_files.py
 
-echo "CSV processing complete. Check images_mapping.csv for results."
+echo "CSV processing complete. Check data/output/images_mapping.csv for results."
 
 # Show alt text information if it was enabled
 if [[ "$generate_alt_text" =~ ^[Yy] ]]; then

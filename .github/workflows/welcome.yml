@@ -1,0 +1,254 @@
+name: Welcome New Contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Welcome new contributor on first issue
+      if: github.event_name == 'issues'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          // Check if this is the user's first issue
+          const { data: issues } = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: context.payload.issue.user.login,
+            state: 'all'
+          });
+          
+          if (issues.length === 1) {
+            // This is their first issue
+            const welcomeMessage = `
+          ## 👋 Welcome to CloudFront Image Upload Utility!
+          
+          Thank you for creating your first issue, @${context.payload.issue.user.login}! 🎉
+          
+          ### 📋 What happens next?
+          
+          1. **Review**: A maintainer will review your issue within 24-48 hours
+          2. **Labels**: We'll add appropriate labels to categorize your issue
+          3. **Discussion**: We may ask for additional information or clarification
+          4. **Resolution**: We'll work together to resolve your issue
+          
+          ### 🤝 Want to contribute?
+          
+          We'd love your help! Here are some ways to get involved:
+          
+          - 🐛 **Fix bugs**: Look for issues labeled \`good first issue\`
+          - 📚 **Improve docs**: Help make our documentation clearer
+          - ✨ **Add features**: Suggest and implement new functionality
+          - 🧪 **Add tests**: Help improve our test coverage
+          
+          ### 📚 Helpful Resources
+          
+          - [Contributing Guidelines](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md)
+          - [Project Rules](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/PROJECT_RULES.md)
+          - [README](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/README.md)
+          
+          ### 🆘 Need Help?
+          
+          - Check our [troubleshooting section](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/README.md#-troubleshooting)
+          - Browse [existing issues](https://github.com/${context.repo.owner}/${context.repo.repo}/issues)
+          - Join our [discussions](https://github.com/${context.repo.owner}/${context.repo.repo}/discussions)
+          
+          ---
+          
+          **Created by**: [Cagri Sarigoz](https://github.com/cagrisarigoz) | **License**: MIT
+          
+          Thanks for helping make this project better! 🚀
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: welcomeMessage
+            });
+          }
+
+    - name: Welcome new contributor on first PR
+      if: github.event_name == 'pull_request_target'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          // Check if this is the user's first PR
+          const { data: prs } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: context.payload.pull_request.user.login,
+            state: 'all'
+          });
+          
+          if (prs.length === 1) {
+            // This is their first PR
+            const welcomeMessage = `
+          ## 🎉 Welcome to CloudFront Image Upload Utility!
+          
+          Thank you for your first pull request, @${context.payload.pull_request.user.login}! This is awesome! 🚀
+          
+          ### 🔍 Review Process
+          
+          1. **Automated Checks**: Our CI will run tests and code quality checks
+          2. **Manual Review**: A maintainer will review your code and provide feedback
+          3. **Collaboration**: We may suggest changes or improvements
+          4. **Merge**: Once approved, we'll merge your contribution!
+          
+          ### ✅ Checklist
+          
+          Please make sure you've:
+          
+          - [ ] Followed our [coding standards](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/PROJECT_RULES.md)
+          - [ ] Added tests for new functionality (if applicable)
+          - [ ] Updated documentation (if needed)
+          - [ ] Tested your changes locally
+          - [ ] Filled out the PR template completely
+          
+          ### 🤝 Community Guidelines
+          
+          - **Be patient**: Reviews may take 24-48 hours
+          - **Be responsive**: Please address feedback promptly
+          - **Be collaborative**: We're here to help you succeed!
+          - **Be respectful**: Follow our code of conduct
+          
+          ### 🏆 Recognition
+          
+          Your contribution will be recognized in:
+          - Our contributors list
+          - Release notes (for significant contributions)
+          - GitHub contributor stats
+          
+          ### 📚 Resources
+          
+          - [Contributing Guidelines](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md)
+          - [Project Rules](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/PROJECT_RULES.md)
+          - [Code of Conduct](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md#-code-of-conduct)
+          
+          ---
+          
+          **Created by**: [Cagri Sarigoz](https://github.com/cagrisarigoz) | **License**: MIT
+          
+          Thank you for contributing to open source! 🌟
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: welcomeMessage
+            });
+          }
+
+    - name: Add labels to new issues
+      if: github.event_name == 'issues'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue = context.payload.issue;
+          const title = issue.title.toLowerCase();
+          const body = issue.body.toLowerCase();
+          
+          let labels = ['needs-triage'];
+          
+          // Auto-label based on title/content
+          if (title.includes('[bug]') || title.includes('bug') || body.includes('error') || body.includes('failed')) {
+            labels.push('bug');
+          }
+          
+          if (title.includes('[feature]') || title.includes('feature') || title.includes('enhancement')) {
+            labels.push('enhancement');
+          }
+          
+          if (title.includes('doc') || title.includes('readme') || body.includes('documentation')) {
+            labels.push('documentation');
+          }
+          
+          if (body.includes('alttext') || body.includes('alt text') || body.includes('ai')) {
+            labels.push('alttext-ai');
+          }
+          
+          if (body.includes('aws') || body.includes('s3') || body.includes('cloudfront')) {
+            labels.push('aws');
+          }
+          
+          if (body.includes('api') || body.includes('endpoint') || body.includes('flask')) {
+            labels.push('api');
+          }
+          
+          // Check if user seems new to the project
+          const { data: userIssues } = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: issue.user.login,
+            state: 'all'
+          });
+          
+          if (userIssues.length === 1) {
+            labels.push('first-time-contributor');
+          }
+          
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issue.number,
+            labels: labels
+          });
+
+    - name: Add labels to new PRs
+      if: github.event_name == 'pull_request_target'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const pr = context.payload.pull_request;
+          const title = pr.title.toLowerCase();
+          const body = pr.body ? pr.body.toLowerCase() : '';
+          
+          let labels = [];
+          
+          // Auto-label based on title/content
+          if (title.includes('fix') || title.includes('bug')) {
+            labels.push('bug');
+          }
+          
+          if (title.includes('feat') || title.includes('feature') || title.includes('add')) {
+            labels.push('enhancement');
+          }
+          
+          if (title.includes('doc') || title.includes('readme')) {
+            labels.push('documentation');
+          }
+          
+          if (title.includes('test') || body.includes('test')) {
+            labels.push('testing');
+          }
+          
+          if (body.includes('breaking') || title.includes('breaking')) {
+            labels.push('breaking-change');
+          }
+          
+          // Check if user seems new to the project
+          const { data: userPRs } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: pr.user.login,
+            state: 'all'
+          });
+          
+          if (userPRs.length === 1) {
+            labels.push('first-time-contributor');
+          }
+          
+          if (labels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: labels
+            });
+          } 

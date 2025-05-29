@@ -10,6 +10,7 @@ import os
 import sys
 import subprocess
 import json
+import csv
 
 def check_python_version():
     """Check if Python version is 3.7 or higher"""
@@ -52,25 +53,35 @@ def check_dependencies():
 
 def create_directories():
     """Create necessary directories"""
-    print("\n📁 Creating directories...")
+    print("📁 Creating directories...")
     
-    upload_dir = 'images_to_upload'
-    if not os.path.exists(upload_dir):
-        os.makedirs(upload_dir)
-        print(f"✅ Created {upload_dir}/ directory")
-    else:
-        print(f"✅ {upload_dir}/ directory already exists")
+    # Create main directories
+    directories = [
+        'data',
+        'data/input',
+        'data/output', 
+        'data/examples',
+        'data/local_images'
+    ]
+    
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"✅ Created {directory}/ directory")
+        else:
+            print(f"✅ {directory}/ directory already exists")
 
-def create_sample_csv():
-    """Create a sample CSV file if it doesn't exist"""
-    print("\n📄 Creating sample files...")
+def create_sample_files():
+    """Create sample CSV file if it doesn't exist"""
+    print("📄 Creating sample files...")
     
-    csv_file = 'images_to_download_and_upload.csv'
+    # Create sample input file
+    csv_file = 'data/input/images_to_download_and_upload.csv'
     if not os.path.exists(csv_file):
-        with open(csv_file, 'w') as f:
-            f.write("URL\n")
-            f.write("# Add your image URLs here, one per line\n")
-            f.write("# Example: https://example.com/image1.jpg\n")
+        with open(csv_file, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['URL'])
+            writer.writerow(['https://example.com/sample-image.jpg'])
         print(f"✅ Created sample {csv_file}")
     else:
         print(f"✅ {csv_file} already exists")
@@ -196,7 +207,7 @@ def main():
     
     # Always create directories and files
     create_directories()
-    create_sample_csv()
+    create_sample_files()
     env_config_ok = create_env_file()
     
     # Check AWS config
@@ -213,27 +224,24 @@ def main():
     
     if all(checks) and basic_test_ok:
         print("✅ Environment setup completed successfully!")
-        
-        next_steps = []
-        if not aws_config_ok:
-            next_steps.append("1. Configure AWS credentials in upload_files.py")
-        if not env_config_ok:
-            next_steps.append("2. Add your AltText.ai API key to .env file")
-        if not alttext_ok and env_config_ok:
-            next_steps.append("3. Verify AltText.ai API key in .env file")
-        
-        if next_steps:
-            print("\n⚠️  Next steps:")
-            for step in next_steps:
-                print(f"   {step}")
-            print("4. Add image URLs to images_to_download_and_upload.csv")
-            print("5. Run: ./process_csv.sh")
-        else:
-            print("\n🎉 You're ready to start uploading images!")
+        print("")
+        print("🎉 You're ready to start uploading images!")
+        if alttext_ok:
             print("📄 Alt text generation is available!")
-            print("Run: ./process_csv.sh")
+        print("Run: ./process_csv.sh")
+        print("")
+        print("📁 File locations:")
+        print("   Input:  data/input/images_to_download_and_upload.csv")
+        print("   Output: data/output/images_mapping.csv")
+        print("   State:  data/output/uploaded_files.json")
     else:
         print("❌ Setup incomplete. Please fix the issues above.")
+        print("")
+        print("📋 Next steps:")
+        print("1. Install missing dependencies")
+        print("2. Configure your .env file with API keys")
+        print("3. Test your AWS and AltText.ai connections")
+        print("4. Add image URLs to data/input/images_to_download_and_upload.csv")
         sys.exit(1)
 
 if __name__ == "__main__":
