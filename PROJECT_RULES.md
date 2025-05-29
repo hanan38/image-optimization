@@ -575,6 +575,196 @@ curl -X GET http://localhost:5000/files
 4. Create release notes
 5. Tag release in git
 
+## 🏷️ GitHub Releases & Git Tagging
+
+### **Key Concepts**
+
+#### **CHANGELOG.md vs GitHub Releases**
+- `CHANGELOG.md` file does **NOT** automatically create GitHub releases
+- GitHub releases are separate entities tied to git tags
+- Both should be maintained for comprehensive version history
+
+#### **Git Tags as Release Triggers**
+- Git tags serve as the foundation for GitHub releases
+- Pushing tags triggers automated release workflows
+- Tags should follow semantic versioning: `v1.0.0`, `v1.1.2`, etc.
+
+### **Automated Release Workflow**
+
+#### **Workflow Location**
+`.github/workflows/release.yml` - Automated GitHub release creation
+
+#### **Trigger Mechanism**
+```yaml
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Matches v1.0.0, v1.1.2, etc.
+```
+
+#### **Workflow Features**
+- Extracts release notes from `CHANGELOG.md`
+- Creates downloadable archives (.tar.gz and .zip)
+- Validates release contents before publishing
+- Supports Python 3.9-3.13 compatibility testing
+
+### **Release Creation Process**
+
+#### **Manual Release Steps**
+```bash
+# 1. Update CHANGELOG.md with new version
+# 2. Commit and push changes
+git add CHANGELOG.md
+git commit -m "Update CHANGELOG for v1.2.0"
+git push origin main
+
+# 3. Create and push git tag
+git tag -a v1.2.0 -m "Release v1.2.0 - New features and improvements"
+git push origin v1.2.0
+
+# 4. GitHub Action automatically creates the release
+```
+
+#### **Tag Naming Convention**
+- Format: `v{MAJOR}.{MINOR}.{PATCH}`
+- Examples: `v1.0.0`, `v1.1.2`, `v2.0.0`
+- Use semantic versioning principles
+- Include descriptive tag messages
+
+### **CHANGELOG.md Integration**
+
+#### **Format for Automated Extraction**
+```markdown
+## [1.2.0] - 2025-01-15
+
+### Added
+- New feature descriptions
+- API endpoint additions
+
+### Changed
+- Modified functionality
+- Updated dependencies
+
+### Fixed
+- Bug fixes and improvements
+```
+
+#### **Release Notes Extraction**
+The workflow automatically extracts content between version headers:
+- Looks for `## [version]` headers
+- Extracts content until next version header
+- Uses extracted content as GitHub release notes
+
+### **Release Archive Contents**
+
+#### **Included Files**
+- All Python source files (`*.py`)
+- Shell scripts (`*.sh`)
+- Documentation files (`*.md`)
+- Configuration templates (`.env.example`)
+- Requirements file (`requirements.txt`)
+- License file (`LICENSE`)
+- Data directory structure (`data/`)
+
+#### **Excluded Files**
+- Environment files (`.env`)
+- Git metadata (`.git/`)
+- Virtual environments (`venv/`)
+- IDE configurations
+- Temporary files
+
+### **Release Validation**
+
+#### **Automated Checks**
+- Core files existence validation
+- Python import testing
+- Archive integrity verification
+- Cross-platform compatibility (tar.gz + zip)
+
+#### **Manual Verification**
+After automated release creation:
+1. Check GitHub Releases page
+2. Verify release notes content
+3. Test downloadable archives
+4. Confirm release assets are present
+
+### **Troubleshooting Releases**
+
+#### **Common Issues**
+
+**No Release Created**
+- Check GitHub Actions for workflow errors
+- Verify tag format matches `v*.*.*` pattern
+- Ensure workflow file is in correct location
+
+**Empty Release Notes**
+- Verify CHANGELOG.md format matches expected structure
+- Check version header format: `## [version] - date`
+- Ensure content exists between version headers
+
+**Missing Files in Archive**
+- Check workflow file patterns for included files
+- Verify file paths and naming conventions
+- Review archive creation step logs
+
+#### **Debugging Commands**
+```bash
+# Check existing tags
+git tag --list
+
+# View tag details
+git show v1.1.2
+
+# Check GitHub Actions status
+# Visit: https://github.com/username/repo/actions
+
+# Test CHANGELOG extraction locally
+awk "/^## \[.*v1.1.2.*\]/{flag=1; next} /^## \[/{if(flag) exit} flag && /^### |^- |^[A-Z]/ {print}" CHANGELOG.md
+```
+
+### **Best Practices**
+
+#### **Pre-Release Checklist**
+- [ ] Update `CHANGELOG.md` with comprehensive notes
+- [ ] Test all functionality in target Python versions
+- [ ] Verify configuration examples are current
+- [ ] Update version numbers in relevant files
+- [ ] Test release workflow in development environment
+
+#### **Release Communication**
+- Use clear, descriptive release titles
+- Include migration notes for breaking changes
+- Highlight major new features
+- Provide links to detailed documentation
+- Acknowledge contributors when applicable
+
+#### **Version Strategy**
+- **MAJOR**: Breaking changes, major new features
+- **MINOR**: New features, backwards-compatible
+- **PATCH**: Bug fixes, minor improvements
+- **Pre-release**: Alpha/beta versions (v1.0.0-alpha.1)
+
+### **Integration with Project Workflow**
+
+#### **Development Cycle**
+1. Feature development and testing
+2. Update documentation and CHANGELOG.md
+3. Code review and merge to main
+4. Create git tag for release
+5. Automated release creation via GitHub Actions
+6. Manual verification and communication
+
+#### **Hotfix Process**
+```bash
+# For urgent fixes
+git checkout main
+# Make fixes
+git commit -m "hotfix: critical bug fix"
+git push origin main
+git tag -a v1.1.3 -m "Hotfix v1.1.3 - Critical bug fix"
+git push origin v1.1.3
+```
+
 ## 🔄 Living Document Updates
 
 ### **When to Update This Document**
