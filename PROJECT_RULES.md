@@ -556,6 +556,76 @@ curl -X GET http://localhost:5000/files
 
 ## 📝 Change Management
 
+### **Pre-Commit Checks**
+
+#### **Mandatory Pre-Commit Validation**
+Before making any commits, **ALL** code must pass the following checks to prevent CI failures:
+
+```bash
+# 1. Format code with black
+black .
+
+# 2. Sort imports with isort  
+isort .
+
+# 3. Check linting with flake8
+flake8 --exclude=venv --max-line-length=127 --extend-ignore=E203,W503 .
+
+# 4. Verify no uncommitted changes remain
+git status
+```
+
+#### **Quick Pre-Commit Script**
+Create this script for easy validation:
+
+```bash
+#!/bin/bash
+# File: pre_commit_check.sh
+
+echo "🔍 Running pre-commit checks..."
+
+echo "📝 Formatting code with black..."
+black .
+
+echo "📋 Sorting imports with isort..."
+isort .
+
+echo "🔍 Running flake8 linting..."
+if flake8 --exclude=venv --max-line-length=127 --extend-ignore=E203,W503 .; then
+    echo "✅ All linting checks passed!"
+else
+    echo "❌ Linting errors found. Please fix before committing."
+    exit 1
+fi
+
+echo "🎉 All pre-commit checks passed! Ready to commit."
+```
+
+#### **Required Tools Installation**
+```bash
+pip install black flake8 isort
+```
+
+#### **Flake8 Configuration**
+- **Max line length**: 127 characters
+- **Excluded directories**: `venv/`, `__pycache__/`
+- **Ignored rules**: 
+  - `E203` - whitespace before ':' (conflicts with black)
+  - `W503` - line break before binary operator (conflicts with black)
+
+#### **Black Configuration**
+- Uses default settings for consistent formatting
+- Automatically handles line length and code style
+
+#### **Import Organization (isort)**
+- Separates standard library, third-party, and local imports
+- Maintains consistent import order across all files
+
+#### **Pre-Commit Enforcement**
+- **GitHub Actions** will fail if code doesn't pass these checks
+- **Local development** should run these before every commit
+- **Code reviews** should verify formatting compliance
+
 ### **Version Control**
 - Use semantic versioning (MAJOR.MINOR.PATCH)
 - Tag releases in git
@@ -565,6 +635,7 @@ curl -X GET http://localhost:5000/files
 ### **Code Review Process**
 - Review all changes before merging
 - Test functionality thoroughly
+- **Verify pre-commit checks have been run**
 - Update documentation as needed
 - Verify security implications
 
