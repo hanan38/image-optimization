@@ -1,6 +1,6 @@
 # Image Upload Utility (CloudFront + Cloudinary)
 
-> **Created by [Cagri Sarigoz](https://github.com/cagrisarigoz)** | **Open Source** | **MIT License**
+> **Created by [Cagri Sarigoz](https://github.com/csarigoz)** | **Open Source** | **MIT License**
 
 A comprehensive tool for downloading, optimizing, and uploading images to **AWS CloudFront/S3** or **Cloudinary**. Features automatic image optimization, format conversion, unique URL generation, and **AI-powered alt text generation** for accessibility and SEO.
 
@@ -71,7 +71,7 @@ python3.13 --version
 **Create virtual environment:**
 ```bash
 # Clone the repository first
-git clone https://github.com/cagrisarigoz/image-optimization.git
+git clone https://github.com/csarigoz/image-optimization.git
 cd image-optimization
 
 # Create virtual environment with Python 3.13
@@ -136,7 +136,7 @@ If you prefer a simpler setup or already have Python 3.9+ installed:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/cagrisarigoz/image-optimization.git
+   git clone https://github.com/csarigoz/image-optimization.git
    cd image-optimization
    ```
 
@@ -746,13 +746,13 @@ python upload_files.py
 ### Getting Help
 
 1. **Check the documentation**: Review this README and [PROJECT_RULES.md](PROJECT_RULES.md)
-2. **Search existing issues**: Look for similar problems in [GitHub Issues](https://github.com/cagrisarigoz/image-optimization/issues)
+2. **Search existing issues**: Look for similar problems in [GitHub Issues](https://github.com/csarigoz/image-optimization/issues)
 3. **Create a new issue**: Use our [bug report template](.github/ISSUE_TEMPLATE/bug_report.md)
-4. **Join discussions**: Participate in [GitHub Discussions](https://github.com/cagrisarigoz/image-optimization/discussions)
+4. **Join discussions**: Participate in [GitHub Discussions](https://github.com/csarigoz/image-optimization/discussions)
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! This project is open source and maintained by [Cagri Sarigoz](https://github.com/cagrisarigoz).
+We welcome contributions from the community! This project is open source and maintained by [Cagri Sarigoz](https://github.com/csarigoz).
 
 ### How to Contribute
 
@@ -792,7 +792,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 ### Creator & Maintainer
-- **[Cagri Sarigoz](https://github.com/cagrisarigoz)** - Original creator and lead maintainer
+- **[Cagri Sarigoz](https://github.com/csarigoz)** - Original creator and lead maintainer
 
 ### Technologies Used
 - **[Python](https://python.org)** - Core programming language
@@ -803,24 +803,24 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### Contributors
 
-Contributors will be recognized here as the project grows. See [GitHub Contributors](https://github.com/cagrisarigoz/image-optimization/graphs/contributors) for the current list.
+Contributors will be recognized here as the project grows. See [GitHub Contributors](https://github.com/csarigoz/image-optimization/graphs/contributors) for the current list.
 
 ## 🔗 Links
 
-- **Repository**: [https://github.com/cagrisarigoz/image-optimization](https://github.com/cagrisarigoz/image-optimization)
-- **Issues**: [Report bugs and request features](https://github.com/cagrisarigoz/image-optimization/issues)
-- **Discussions**: [Community discussions](https://github.com/cagrisarigoz/image-optimization/discussions)
-- **Releases**: [Download latest version](https://github.com/cagrisarigoz/image-optimization/releases)
+- **Repository**: [https://github.com/csarigoz/image-optimization](https://github.com/csarigoz/image-optimization)
+- **Issues**: [Report bugs and request features](https://github.com/csarigoz/image-optimization/issues)
+- **Discussions**: [Community discussions](https://github.com/csarigoz/image-optimization/discussions)
+- **Releases**: [Download latest version](https://github.com/csarigoz/image-optimization/releases)
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/cagrisarigoz/image-optimization?style=social)
-![GitHub forks](https://img.shields.io/github/forks/cagrisarigoz/image-optimization?style=social)
-![GitHub issues](https://img.shields.io/github/issues/cagrisarigoz/image-optimization)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/cagrisarigoz/image-optimization)
+![GitHub stars](https://img.shields.io/github/stars/csarigoz/image-optimization?style=social)
+![GitHub forks](https://img.shields.io/github/forks/csarigoz/image-optimization?style=social)
+![GitHub issues](https://img.shields.io/github/issues/csarigoz/image-optimization)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/csarigoz/image-optimization)
 
 ---
 
-**Made with ❤️ by [Cagri Sarigoz](https://github.com/cagrisarigoz)**
+**Made with ❤️ by [Cagri Sarigoz](https://github.com/csarigoz)**
 
 *If this project helps you, please consider giving it a ⭐ on GitHub!* 

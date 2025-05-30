@@ -72,7 +72,7 @@ This project adheres to a code of conduct that we expect all contributors to fol
 
 4. **Add upstream remote**
    ```bash
-   git remote add upstream https://github.com/cagrisarigoz/image-optimization.git
+   git remote add upstream https://github.com/csarigoz/image-optimization.git
    ```
 
 ## 🛠 Development Setup
@@ -475,7 +475,7 @@ Contributors will be recognized in:
 
 ### Maintainers
 
-- **Cagri Sarigoz** ([@cagrisarigoz](https://github.com/cagrisarigoz)) - Creator and Lead Maintainer
+- **Cagri Sarigoz** ([@cagrisarigoz](https://github.com/csarigoz)) - Creator and Lead Maintainer
 
 ## 📄 License
 

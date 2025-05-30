@@ -2,6 +2,7 @@
 
 **Status**: Living Document  
 **Version History**: See [CHANGELOG.md](CHANGELOG.md)  
+**Created By**: [Cagri Sarigoz](https://github.com/csarigoz) 
 
 This document serves as a comprehensive guide for AI models and developers working with the Multi-Provider Image Upload Utility repository. It outlines project structure, coding standards, conventions, and best practices for both Cloudinary and CloudFront integrations.
 
